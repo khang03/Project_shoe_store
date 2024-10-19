@@ -1,5 +1,6 @@
 .wrapper{
     width: 100%;
+    position: relative;
 
     .wr_post{
         width: 100%;
@@ -106,5 +107,23 @@
     }
     .wr_comment:hover{
         box-shadow: 0px 0px 6px #a5a4a5;
+    }
+
+    .wr_inp_comment{
+        height: 60px;
+        width: 100%;
+        bottom: 0;
+        position: sticky;
+        border-top: 1px solid #a5a4a5;
+        background-color: #fff;
+        display: flex;
+        text-align: center;
+        align-items: center;
+        padding: 0 20px;
+        input{
+            outline: none;
+            border: 0;
+            width: 90%;
+        }
     }
 }
