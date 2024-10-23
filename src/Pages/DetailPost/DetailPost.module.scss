@@ -52,7 +52,7 @@
                         height: auto;
                         border-radius: 15px;
                     }
-                    img:Hover{
+                    img:hover {
                         cursor: pointer;
                     }
                 }
@@ -149,6 +149,23 @@
                     border: 0;
                     color: #fff;
                     font-weight: bold;
+                }
+                .menu {
+                    width: 10%;
+                    height: 100%;
+                    .btn_menu {
+                        color: #000000;
+                        font-size: 15px;
+                        font-weight: bold;
+                        border-radius: 15px;
+                    }
+                    .wr_menu {
+                        border-radius: 50%;
+                        font-size: 20px;
+                        .menu_item {
+                            font-weight: bold;
+                        }
+                    }
                 }
             }
         }
@@ -321,5 +338,28 @@
         //         background-color: #000000;
         //         color: #fff;
         // }
+    }
+    .wr_inp_new_comment {
+        width: 100%;
+        padding: 20px 20px 0 20px;
+        input {
+            width: 100%;
+            outline: none;
+            border: 0;
+        }
+        button {
+            margin-left: 85%;
+            margin-top: 20px;
+            width: 50px;
+            height: 30px;
+            border-radius: 10px;
+            background-color: #fff;
+            border-color: #9c9393;
+            box-shadow: 0 0 2px;
+        }
+        button:hover{
+            background-color: #333;
+            color: #fff;
+        }
     }
 }

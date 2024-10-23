@@ -10,7 +10,7 @@ const publicRoutes = [
     { path: '/Profile', component: Profile },
     { path: '/Notification', component: Notification },
     { path: '/Find', component: Find },
-    { path: '/DetailPost', component: DetailPost },
+    { path: '/DetailPost/:id', component: DetailPost },
 ];
 
 const privateRoutes = [];
