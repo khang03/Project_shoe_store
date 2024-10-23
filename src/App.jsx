@@ -2,6 +2,9 @@ import { Fragment } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { publicRoutes } from '~/routes';
 import { DefaultLayout } from '~/components/Layout';
+import { Switch } from '@mui/material';
+import Profile from './Pages/Profile';
+import DetailPost from './Pages/DetailPost';
 
 function App() {
     return (
@@ -17,15 +20,20 @@ function App() {
                             Layout = Fragment;
                         }
                         return (
-                            <Route
-                                key={index}
-                                path={route.path}
-                                element={
-                                    <Layout>
-                                        <Page />
-                                    </Layout>
-                                }
-                            ></Route>
+                            <Fragment>
+
+                                <Route
+                                    key={index}
+                                    path={route.path}
+                                    element={
+                                        <Layout>
+                                            <Page />
+                                        </Layout>
+                                    }
+                                ></Route>
+                                
+                            </Fragment>
+                                
                         );
                     })}
                 </Routes>

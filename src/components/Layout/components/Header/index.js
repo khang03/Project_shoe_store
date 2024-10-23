@@ -10,7 +10,7 @@ function Header() {
                     Trang chủ
                 </Link>
                 <span>Dành cho bạn</span>
-                <span>vaaaaaaaaa</span>
+                <span>Đăng Xuất</span>
             </div>
         </header>
     );
