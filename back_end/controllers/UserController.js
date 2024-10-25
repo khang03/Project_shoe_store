@@ -5,11 +5,10 @@ class UserController {
 
     // [GET] Lây danh sách người dùng
     index(req, res) {
-        res.send('<form action="/users/store" method="post"> <input type="hidden" name="q" value="searchF8"> <input type="submit" value="Submit"></form>');
         
-        // dbModel.User.findAll()
-        //     .then(users => res.json(users))
-        //     .catch(err => res.status(500).json(err));
+        dbModel.User.findAll()
+            .then(users => res.json(users))
+            .catch(err => res.status(500).json(err));
     }
     // [GET] Lấy người dùng cụ thể theo id
     show(req,res) {

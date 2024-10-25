@@ -2,10 +2,33 @@ import { BiXCircle, BiImageAdd, BiHeart, BiMessageRounded, BiShare, BiSolidHeart
 
 import classNames from 'classnames/bind';
 import style from './Home.module.scss';
-import { Fragment, useRef, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
+import axios from 'axios';
 
 function Home() {
     const cx = classNames.bind(style);
+    //Lấy dữ liệu user
+    const [user, setUser] = useState([])
+
+
+    
+        const getUser = async () => {
+        try {
+            const reponse = await axios.get('http://localhost:8080/users')
+            setUser(reponse.data)
+
+            
+
+        }catch(e){
+            console.log(e.message);
+            
+        }
+    }
+    useEffect(() => {
+        getUser()
+
+    }, [])
+
     const btn = useRef();
 
     const [btnUpLoad, setBtnUpLoad] = useState(false);
@@ -110,14 +133,14 @@ function Home() {
                         </div>
                     )}
                 </div>
-
-                <div className={cx('post')}>
+                {user.map(item => (
+                    <div className={cx('post')}>
                     <div className={cx('wr_startus_post')}>
                         <div className={cx('img_startus')}>
-                            <img src="https://scontent.fsgn2-8.fna.fbcdn.net/v/t39.30808-6/451342439_1545279516420145_664382896184158578_n.jpg?stp=dst-jpg_s600x600&_nc_cat=102&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeEtuooj7cntrEsyS3BI2qyHQrU2AFLPZpNCtTYAUs9mkzrpY2pD6_iv9FlZyhceycfj5e9SPg2qhA7bXxn-XCls&_nc_ohc=MmZ5MF3JLYYQ7kNvgHft24g&_nc_zt=23&_nc_ht=scontent.fsgn2-8.fna&_nc_gid=AQjnXq8jnQH4TA9ys9-kvYX&oh=00_AYD4C1xmRYphJ_489MmztS-XieVXUbqUbbyVlBA5_48fCg&oe=671566A6" />
+                            <img src={item.avatar}/>
                         </div>
                         <div className={cx('wr_des_post')}>
-                            <div className={cx('user_id')}>user_id</div>
+                            <div className={cx('user_id')}>{item.username}</div>
                             <div className={cx('des_post')}>
                                 <p>
                                     Mô tả của bài viết ở đâysaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaa
@@ -148,6 +171,8 @@ function Home() {
                         <label>Share</label>
                     </div>
                 </div>
+                ))}
+                
                 {/* <div className={cx('post')}>
                     <div className={cx('wr_startus_post')}>
                         <div className={cx('img_startus')}>
