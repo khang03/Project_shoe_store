@@ -1,0 +1,69 @@
+.hidden {
+    display: none;
+}
+
+// ----isActive----
+.relative_wr {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.wr_position_up_post {
+    width: 100%;
+    height: calc(100% + 100px);
+    background-color: #00000043;
+    position: absolute;
+    top: -100px;
+    overflow-block: clip;
+    z-index: 10;
+    left: 0;
+}
+
+.position_wr_add_post {
+    width: 580px;
+    background-color: #fff;
+    border-radius: 15px;
+    top: calc(50% - 140px);
+    left: calc(50% - 290px);
+    position: absolute;
+    min-height: 280px;
+    max-height: fit-content;
+}
+
+
+
+
+
+.btn_upl_stt {
+    height: 100%;
+    width: 20%;
+    align-content: center;
+    text-align: right;
+    padding-right: 15px;
+    .btn_turn_off_post {
+        height: 20px;
+        width: 20px;
+        font-size: 30px;
+        margin-bottom: 50px;
+        border-radius: 50%;
+        background-color: #ffffff00;
+        border: #9c939300;
+        color: #a1a1a2;
+        padding: 0 30px;
+    }
+
+    .btn_upload {
+        height: 40px;
+        width: 70%;
+        border-radius: 10px;
+        background-color: #fff;
+        border-color: #9c9393;
+        box-shadow: 0 0 2px;
+    }
+
+    .btn_upload:hover{
+        background-color: #333;
+        color: #fff;
+    }
+}

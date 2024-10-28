@@ -6,9 +6,7 @@ const userRoute = require('./userRoute.js');
 function Routes(app) {
     app.use('/posts', postRoute);
     app.use('/users', userRoute);
-    // app.use('/', (req,res) => {
-    //     res.send('this is index page');
-    // })
+    
 }
 
 module.exports = Routes;

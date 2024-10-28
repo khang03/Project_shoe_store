@@ -1,4 +1,4 @@
-import { HeaderOnly } from '~/components/Layout';
+
 import Home from '~/Pages/Home';
 import Profile from '~/Pages/Profile';
 import Notification from '~/Pages/Notification';

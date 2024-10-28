@@ -12,6 +12,7 @@ function App() {
             <div className="App">
                 <Routes>
                     {publicRoutes.map((route, index) => {
+                        // handle
                         const Page = route.component;
                         let Layout = DefaultLayout;
                         if (route.layout) {
@@ -19,21 +20,13 @@ function App() {
                         } else if (route.layout === null) {
                             Layout = Fragment;
                         }
-                        return (
-                            <Fragment>
-
+                        // Return
+                        return (                         
                                 <Route
                                     key={index}
                                     path={route.path}
-                                    element={
-                                        <Layout>
-                                            <Page />
-                                        </Layout>
-                                    }
-                                ></Route>
-                                
-                            </Fragment>
-                                
+                                    element={ <Layout> <Page /> </Layout> }        
+                                ></Route>                      
                         );
                     })}
                 </Routes>
