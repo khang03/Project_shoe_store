@@ -54,13 +54,13 @@ function ModalPost({closeModal}) {
                     </div>
                     <div className={cx('info_render')}>
                         <div className={cx('img_render')}>
-                            {/* {imageRender && (
+                            {imageRender && (
                                 <img
                                     src={imageRender.preview}
                                     alt=""
                                     style={{ width: 'auto', height: 100, borderRadius: '15px' }}
                                 />
-                            )} */}
+                            )}
                         </div>
                     </div>
                     
