@@ -5,6 +5,7 @@ import { DefaultLayout } from '~/components/Layout';
 import { Switch } from '@mui/material';
 import Profile from './Pages/Profile';
 import DetailPost from './Pages/DetailPost';
+import HeaderOnlyLayout from './components/Layout/HeaderOnlyLayout';
 
 function App() {
     return (
@@ -19,14 +20,21 @@ function App() {
                             Layout = route.layout;
                         } else if (route.layout === null) {
                             Layout = Fragment;
+                        } else if (route.layout === HeaderOnlyLayout) {
+                            Layout = HeaderOnlyLayout;
                         }
                         // Return
-                        return (                         
-                                <Route
-                                    key={index}
-                                    path={route.path}
-                                    element={ <Layout> <Page /> </Layout> }        
-                                ></Route>                      
+                        return (
+                            <Route
+                                key={index}
+                                path={route.path}
+                                element={
+                                    <Layout>
+                                        {' '}
+                                        <Page />{' '}
+                                    </Layout>
+                                }
+                            ></Route>
                         );
                     })}
                 </Routes>

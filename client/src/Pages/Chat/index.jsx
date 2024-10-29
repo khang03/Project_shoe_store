@@ -41,8 +41,6 @@ function Chat() {
             setMess([...mess, newMess]);
             setInputValue('');
             console.log(...mess);
-            
-
         }
     };
 
@@ -80,21 +78,19 @@ function Chat() {
                 </div>
 
                 <div className={cx('content_mess')}>
-                    {mess.map((item , index) => (
-
-                    <div className={cx('my_mess')}>
-                        <div className={cx('content_my_mess')} id={item.id}>
-                            {item.text}
-                        </div>
-                    </div>
-                    ))}
                     <div className={cx('user_mess')}>
                         <div className={cx('avatar_user_mess')}>
                             <Avatar src="https://th.bing.com/th/id/OIP.6nDu0p6RwW2arJTCOU2pCQHaDt?rs=1&pid=ImgDetMain" />
                         </div>
                         <div className={cx('content_user_mess')}>hehe</div>
-
                     </div>
+                    {mess.map((item, index) => (
+                        <div className={cx('my_mess')}>
+                            <div className={cx('content_my_mess')} id={item.id}>
+                                {item.text}
+                            </div>
+                        </div>
+                    ))}
                 </div>
                 <div className={cx('wr_send_mess')}>
                     <div className={cx('wr_input_mess')}>
@@ -110,9 +106,8 @@ function Chat() {
                             <label>
                                 <BiImageAdd className={cx('img_icon')} />
                             </label>
-
                         </div>
-                            <button onClick={handlePostSubmit}>Gửi</button>
+                        <button onClick={handlePostSubmit}>Gửi</button>
                     </div>
                 </div>
             </div>

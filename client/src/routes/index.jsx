@@ -6,6 +6,9 @@ import Find from '~/Pages/Find';
 import DetailPost from '~/Pages/DetailPost';
 import Chat from '~/Pages/Chat';
 import ProfileOther from '~/Pages/ProfileOther';
+import HeaderOnlyLayout from '~/components/Layout/HeaderOnlyLayout';
+import Register from '~/Pages/Register';
+import Login from '~/Pages/Login';
 
 const publicRoutes = [
     { path: '/', component: Home },
@@ -13,8 +16,10 @@ const publicRoutes = [
     { path: '/ProfileOther', component: ProfileOther },
     { path: '/Notification', component: Notification },
     { path: '/Find', component: Find },
-    { path: '/Chat', component: Chat },
+    { path: '/Chat', component: Chat, layout: HeaderOnlyLayout },
     { path: '/DetailPost/:id', component: DetailPost },
+    { path: '/Register/', component: Register, layout: null },
+    { path: '/Login', component: Login, layout: null },
 ];
 
 const privateRoutes = [];
