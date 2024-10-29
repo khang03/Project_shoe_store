@@ -1,26 +1,26 @@
 import classNames from "classnames/bind";
 import { BiHeart, BiSolidHeart,BiMessageRounded,BiShare } from "react-icons/bi";
 import style from "./PostUser.module.scss"
+import { useState } from "react";
 
 const cx = classNames.bind(style);
 
 
 
 const PostUser = ({dataItem}) => {
-    let like = true;
-    // // Xử lí nút like bài viết
-    // const [like, setLike] = useState();
-    // const [countLike, setCountLike] = useState(0);
-    // const handleLike = () => {
-    //     setLike(true);
-    //     if(like){
-    //         setCountLike(countLike - 1);
-    //     }
-    //     else{
-    //         setCountLike(countLike + 1);
-    //     }
-    //     setLike(!like)
-    // };
+    // Xử lí nút like bài viết
+    const [like, setLike] = useState(false);
+    const [countLike, setCountLike] = useState(0);
+    const handleLike = () => {
+        setLike(true);
+        if(like){
+            setCountLike(countLike - 1);
+        }
+        else{
+            setCountLike(countLike + 1);
+        }
+        setLike(!like)
+    };
 
 
     return (
@@ -49,10 +49,11 @@ const PostUser = ({dataItem}) => {
                 </div>
 
                 <div className={cx('interact')}>
-                    <button className={cx('like')}>
+                    <button className={cx('like')}  onClick={handleLike}>
+
                         {like ? <BiSolidHeart style={{color: 'red'}}/> : <BiHeart />}{' '}
                     </button>{' '}
-                    <label>2</label>
+                    <label>{countLike}</label>
                     <button className={cx('comment')}>
                         <BiMessageRounded />{' '}
                     </button>{' '}

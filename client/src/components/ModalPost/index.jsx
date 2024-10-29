@@ -11,7 +11,7 @@ function ModalPost({ closeModal }) {
     const [txtDesPost, setTxtDesPost] = useState('');
     console.log('123');
     //Render image khi nhập từ input
-    const [imageRender, setImageRender] = useState();
+    const [imageRender, setImageRender] = useState([]);
 
     const handlePreviewImage = (e) => {
         const file = e.target.files[0];
@@ -44,7 +44,7 @@ function ModalPost({ closeModal }) {
                                 />
 
                                 <div className={cx('wr_inp_img')}>
-                                    <input type="file" className={cx('inp_img')} />
+                                    <input type="file" className={cx('inp_img')} onChange={handlePreviewImage}/>
                                     <label>
                                         <BiImageAdd className={cx('img_icon')} />
                                     </label>
@@ -69,6 +69,9 @@ function ModalPost({ closeModal }) {
                                 />
                             )}
                         </div>
+                    </div>
+                    <div className={cx('wr_btn_upl_stt')}>
+                        <button className={cx('btn_upload')}>Đăng</button>
                     </div>
                 </div>
             </div>
