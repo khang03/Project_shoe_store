@@ -74,19 +74,14 @@ const arr_post = [
 function Profile() {
     const [user, setUser] = useState(null);
     const [posts, setPosts] = useState([]);
-    console.log(posts);
     
-  useEffect(() => {
-    const fetchPosts = async () => {
-      const response = await axios.get('https://jsonplaceholder.typicode.com/posts');
-      setPosts(response.data);
-    };
+    useEffect(() => {
+        setUser(user_data)
+    setPosts(arr_post);
+    }, [])
 
-    fetchPosts();
-    setUser(user_data)
 
-  }, []);
-
+    
     //----------------------------------------------Phan xu li render up post---------------------------------------
     const [btnUpLoad, setBtnUpLoad] = useState(false);
 
@@ -144,7 +139,7 @@ function Profile() {
         return () => {
             document.removeEventListener('mousedown', unrenderEditProfile);
         };
-    });
+    },[]);
 
     //Btn Trang rieng tu hoac cong khai
     const [loading, setLoading] = React.useState(true);
@@ -174,7 +169,6 @@ function Profile() {
     const [like, setLike] = useState();
     const [countLike, setCountLike] = useState(0);
     const handleLike = async (id) => {
-        
         setLike(true);
         if (like) {
             setCountLike(countLike - 1);
@@ -225,11 +219,11 @@ function Profile() {
                             <div className={cx('wr_image')}>
                                 <Avatar alt="My avatar" src={item.img} />
                             </div>
-                            <div className={cx('container_post')} >
+                            <div className={cx('container_post')}>
                                 <div className={cx('my_user')} key={item.id}>
                                     <Link to={`/DetailPost/${item.id}`}>
                                         <div className={cx('id_and_day')}>
-                                            <p>{item.title}</p>
+                                            <p>{item.user_id}</p>
                                             <span>01/01/2024</span>
                                         </div>
                                     </Link>
@@ -263,7 +257,7 @@ function Profile() {
                                     </div>
                                 </div>
                                 <div className={cx('des_post')}>
-                                    <p>{item.description}</p>
+                                    <p>{item.content}</p>
                                 </div>
                                 <div className={cx('file_post')}>
                                     <img src={item.img} />

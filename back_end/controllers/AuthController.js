@@ -1,11 +1,11 @@
- 
+const { where } = require("sequelize");
+const dbModel = require("../models");
 
  class AuthController {
 
     // [POST] login 
-    login() {
-
-    }
+     login(req, res) {
+     }
     // [POST] register
 
     register() {
@@ -20,3 +20,4 @@
 
     
  }
+ module.exports = new AuthController();

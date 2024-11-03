@@ -4,6 +4,7 @@ const port = 8080
 const routes = require('./routes');
 const cors = require('cors');
 
+app.use(express.json());
 app.use(cors()); // Allow all origins
 // Run All Routes
 routes(app);
