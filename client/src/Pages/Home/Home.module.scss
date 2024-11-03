@@ -2,16 +2,8 @@ button:hover {
     cursor: pointer;
 }
 .wrapper {
-    
-
-    .post {
-        border-top: 1px solid #9c9393;
-        height: fit-content;
-        width: 100%;
-        margin-bottom: 20px;
-    }
+    height: fit-content;
 }
-
 
 .des_startus {
     height: 100%;
@@ -82,7 +74,7 @@ button:hover {
             color: #a1a1a2;
             padding: 0 30px;
         }
-    
+
         .btn_upload {
             height: 40px;
             width: 70%;
@@ -91,14 +83,13 @@ button:hover {
             border-color: #9c9393;
             box-shadow: 0 0 2px;
         }
-    
-        .btn_upload:hover{
+
+        .btn_upload:hover {
             background-color: #333;
             color: #fff;
         }
     }
 }
-
 
 .info_render {
     width: 100%;

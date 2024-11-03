@@ -8,140 +8,217 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
 const cx = classNames.bind(style);
-// const arr_post = [
-//     {
-//         post_id: 1,
-//         description: 'Hôm nay buồn quá các bạn',
-//         img: 'https://th.bing.com/th/id/OIP._9ASq3twoUAAMV6Xb-uvlwHaFm?rs=1&pid=ImgDetMain',
-//     },
-//     {
-//         post_id: 2,
-//         description: 'Khá đẹp trai',
-//         img: 'https://th.bing.com/th/id/OIP.hvq1mk4KaOTVcy_L-CY5xgHaFb?w=231&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7',
-//     },
-//     {
-//         post_id: 3,
-//         description: 'Em khang mafia',
-//         img: 'https://th.bing.com/th/id/OIP.XiwYd2wYl5HB7NVFZXe8gAHaHa?w=163&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7',
-//     },
-//     {
-//         post_id: 4,
-//         description: 'Có những thứ đâu phải nói z là z',
-//         img: 'https://th.bing.com/th/id/OIP._9ASq3twoUAAMV6Xb-uvlwHaFm?rs=1&pid=ImgDetMain',
-//     },
-//     {
-//         post_id: 5,
-//         description: 'aaaaaaaaaaaaaaaaaaaaaaa',
-//         img: 'https://th.bing.com/th/id/OIP._9ASq3twoUAAMV6Xb-uvlwHaFm?rs=1&pid=ImgDetMain',
-//     },
-//     {
-//         post_id: 6,
-//         description: 'Hello cả nhà yêu của Kem',
-//         img: 'https://th.bing.com/th/id/OIP.SsnrO7pzZHaycvEAI7gQ2AHaEn?w=280&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7',
-//     },
-//     {
-//         post_id: 7,
-//         description: 'Olele Olala',
-//         img: 'https://th.bing.com/th/id/OIP.6nDu0p6RwW2arJTCOU2pCQHaDt?w=327&h=174&c=7&r=0&o=5&dpr=1.3&pid=1.7',
-//     },
-//     {
-//         post_id: 8,
-//         description: 'Trời hôm nay nhiều mây cực',
-//         img: 'https://th.bing.com/th/id/OIP._9ASq3twoUAAMV6Xb-uvlwHaFm?rs=1&pid=ImgDetMain',
-//     },
-//     {
-//         post_id: 9,
-//         description: 'Mẹ ơi, thằng con trai của mẹ là một thằng phản bội',
-//         img: 'https://th.bing.com/th/id/OIP._9ASq3twoUAAMV6Xb-uvlwHaFm?rs=1&pid=ImgDetMain',
-//     },
-//     {
-//         post_id: 10,
-//         description: 'Hôm nay vui quá các bạn',
-//         img: 'https://th.bing.com/th/id/OIP._9ASq3twoUAAMV6Xb-uvlwHaFm?rs=1&pid=ImgDetMain',
-//     },
-// ];
-function DetailPost() {
-    const { id } = useParams();
-    const [post, setPost] = useState({});
-  
-    useEffect(() => {
-      const fetchPost = async () => {
-        const response = await axios.get(`https://jsonplaceholder.typicode.com/posts/${id}`);
-        setPost(response.data);
-      };
-  
-      fetchPost();
-    },);
 
-    
+function DetailPost() {
+    //lấy danh sách user
+    const [users, setUsers] = useState([]);
+
+    useEffect(() => {
+        axios
+            .get(`http://localhost:8080/users`)
+
+            .then((reponse) => setUsers(reponse.data))
+            .catch((error) => console.log('Không lấy đƯợc dữ liệu', error));
+
+        return () => {
+            console.log('hihi');
+        };
+    }, []);
+
+    const [post, setPost] = useState();
+    const { id } = useParams();
+    useEffect(() => {
+        axios
+            .get(`http://localhost:8080/posts/${id}`)
+
+            .then((reponse) => setPost(reponse.data))
+            .catch((error) => console.log('Không lấy đƯợc dữ liệu', error));
+
+        return () => {
+            console.log('hihi');
+        };
+    }, [id]);
+
+    // console.log(post);
+
     //Xử lí nút like bài viết
     const [like, setLike] = useState();
     const [countLike, setCountLike] = useState(0);
     const [showHeart, setShowHeart] = useState(false);
-    const handleLike = () => {
-        setLike(true);
-        if (like) {
-            setCountLike(countLike - 1);
-        } else {
-            setCountLike(countLike + 1);
-        }
-        setLike(!like);
+    // const handleLike = () => {
+    //     if (like) {
+    //         setCountLike(countLike - 1);
+    //     } else {
+    //         setCountLike(countLike + 1);
+    //     }
 
-        setShowHeart(true);
-        setTimeout(() => {
-            setShowHeart(false);
-        }, 1000);
+    // };
+
+    const handleLike = async () => {
+        try {
+            const response = await axios.post('http://localhost:8080/likes', {
+                user_id: 1,
+                post_id: post.id,
+            });
+
+            setPost((prevPost) => {
+                
+
+                return {
+                    ...prevPost,
+                    // Likes: prevPost.Likes.length + 1,
+                    Likes: [
+                        ...prevPost.Likes,
+                        {
+                            id: Math.floor(100 + Math.random() * 900),
+                            user_id: 1,
+                        },
+                    ],
+                    // Likes: 3,
+                };
+            });
+
+            setLike(true);
+            setShowHeart(true);
+            setTimeout(() => {
+                setShowHeart(false);
+            }, 1000);
+
+            console.log('Like added:', response.data);
+        } catch (error) {
+            console.error('Error adding like:', error);
+        }
+    };
+    console.log(post);
+
+    //Xoá Like
+    const handleUnLike = async () => {
+        try {
+            const response = await axios.delete('http://localhost:8080/likes', {
+                data: {
+                    user_id: 1,
+                    post_id: post.id,
+                },
+            });
+
+            setPost((prevPost) => {
+                const updateLike = prevPost.Likes.filter(like => like.user_id !== 1)
+                return {
+                    ...prevPost,
+                    Likes: updateLike
+                }
+            })
+
+            setLike(false);
+            setShowHeart(true);
+            setTimeout(() => {
+                setShowHeart(false);
+            }, 1000);
+            setPost((prev) => ({
+                ...prev,
+                Comments: prev.Likes.length + 1,
+            }));
+
+            console.log('Like added:', response.data);
+        } catch (error) {
+            console.error('Error adding like:', error);
+        }
+    };
+
+    const toggleLike = async () => {
+        if (like) {
+            await handleUnLike();
+        } else {
+            await handleLike();
+        }
     };
 
     //Xử lí thêm bình luận
-    const [inputValue, setInputValue] = useState('');
-    const [posts, setPosts] = useState([]);
+    const [content, setContent] = useState('');
 
-    // Hàm xử lý khi người dùng nhập vào ô input
-    const handleInputChange = (event) => {
-        setInputValue(event.target.value);
+    const handleSubmit = async (e, postId) => {
+        e.preventDefault();
+
+        try {
+            const response = await axios.post('http://localhost:8080/comments/', { content, postId });
+            console.log('Comment added:', response.data);
+            setContent('');
+        } catch (error) {
+            console.error('Error adding comment:', error.response.data.error);
+        }
     };
 
     // Hàm xử lý khi người dùng click vào nút "Đăng"
 
     //số lượng cmt
-    const [countComment, setCountComment] = useState(0);
+    // const [countComment, setCountComment] = useState(0);
+    // const [dataComment, setDataComment] = useState([]);
 
-    const handlePostSubmit = () => {
-        if (inputValue.trim() !== '') {
-            // Thêm nội dung mới vào danh sách bài đăng và xóa nội dung đã nhập sau khi đăng
+    // useEffect(() => {
+    //     axios
+    //         .get('http://localhost:8080/comments')
+    //         .then((reponse) => setDataComment(reponse.data))
+    //         .catch((error) => console.log('Không lấy đƯợc dữ liệu', error));
+    // }, []);
 
-            const newComment = { id: Date.now(), text: inputValue.trim() };
-            setPosts([...posts, newComment]);
-            setInputValue('');
-            setCountComment((prev) => prev + 1);
+    // Xoá bình luận theo id bài viết
+    const [error, setError] = useState(null);
+
+    const handleDeleteComment = async (commentId) => {
+        try {
+            const response = await axios.delete(`http://localhost:8080/comments/${commentId}`);
+            console.log(response.data.message); // Thông báo thành công
+
+            // Cập nhật danh sách bình luận sau khi xóa
+            setPost((prevPost) => ({
+                ...prevPost,
+                Comments: prevPost.Comments.filter((comment) => comment.id !== commentId),
+            }));
+        } catch (error) {
+            console.error('Failed to delete comment:', error);
+            setError('Failed to delete comment');
+        }
+        setBtnDelete(false);
+    };
+
+    //Sửa comment-------------------------------------------------------------------------------------
+    const [dataComment, setDataComment] = useState([]);
+
+    useEffect(() => {
+        axios
+            .get('http://localhost:8080/comments')
+            .then((response) => setDataComment(response.data))
+            .catch((error) => console.log('Không lấy được dữ liệu', error));
+    }, []);
+
+    const [newContent, setNewContent] = useState('');
+
+    const handleUpdateComment = async (commentId, e) => {
+        e.preventDefault();
+        try {
+            const response = await axios.put(`http://localhost:8080/comments/${commentId}`, {
+                comment_content: newContent, // Nội dung bình luận mới
+            });
+            console.log(response.data.message); // Thông báo thành công
+
+            // Cập nhật danh sách bình luận sau khi sửa
+            setDataComment((prevComments) =>
+                prevComments.map((comment) =>
+                    comment.id === commentId ? { ...comment, comment_content: newContent } : comment,
+                ),
+            );
+        } catch (error) {
+            console.error('Failed to update comment:', error);
+            setError('Failed to update comment');
         }
     };
 
-    //Xoá bình luận theo id bài viết
-    const deleteComment = (id) => {
-        const updateComment = posts.filter((posts) => posts.id !== id);
-        setPosts(updateComment);
-        setBtnDelete(false);
-        setCountComment((prev) => prev - 1);
-    };
-
-    //Chỉnh sửa comment
-    const [editingId, setEditingId] = useState(null);
-    const [editingText, setEditingText] = useState('');
-
-    const handleSave = () => {
-        setPosts(posts.map((post) => (post.id === editingId ? { ...post, text: editingText } : post)));
-        setEditingId(null);
-        setEditingText('');
-        setEditComment(false);
-    };
     //----------------------------------------------Phan xu li render màn hình nhỏ---------------------------------------
 
     const [btnDelete, setBtnDelete] = useState(false);
     const [editComment, setEditComment] = useState(false);
 
-    //phan set true false cho man hinh up post
+    //phan set true false cho man hinh up post-------------------------------------------------
     const handleDelete = () => {
         setBtnDelete(true);
         setAnchorEl(null);
@@ -149,8 +226,6 @@ function DetailPost() {
     const handleEditComment = (id, text) => {
         setEditComment(true);
         setAnchorEl(null);
-        setEditingId(id);
-        setEditingText(text);
     };
 
     const containerRef = useRef(null);
@@ -162,6 +237,7 @@ function DetailPost() {
         }
     };
 
+    //Mouse ra ngoiaf sẽ tắt cửa sổ nhỏ
     useEffect(() => {
         document.addEventListener('mousedown', unrenderUpPost);
         return () => {
@@ -182,164 +258,201 @@ function DetailPost() {
 
     return (
         <Fragment>
-            <div className={cx('wrapper')}>
-                <div className={cx('wr_post')}>
-                    <div className={cx('head_post')}>
-                        <div className={cx('avatar_post')}>
-                            <img
-                                className={cx('avatar')}
-                                src="https://scontent.fsgn2-8.fna.fbcdn.net/v/t39.30808-6/451342439_1545279516420145_664382896184158578_n.jpg?stp=dst-jpg_s600x600&_nc_cat=102&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeEtuooj7cntrEsyS3BI2qyHQrU2AFLPZpNCtTYAUs9mkzrpY2pD6_iv9FlZyhceycfj5e9SPg2qhA7bXxn-XCls&_nc_ohc=MmZ5MF3JLYYQ7kNvgHft24g&_nc_zt=23&_nc_ht=scontent.fsgn2-8.fna&_nc_gid=AQjnXq8jnQH4TA9ys9-kvYX&oh=00_AYD4C1xmRYphJ_489MmztS-XieVXUbqUbbyVlBA5_48fCg&oe=671566A6"
-                            />
-                        </div>
-                        <div className={cx('user_id_day')}>
-                            <p>{post.id}</p>
-                            <span>01/01/2024</span>
-                        </div>
-                    </div>
-                    <div className={cx('content_post')}>
-                        <div className={cx('content')}>
-                            <p>{post.title}</p>
-                            <div className={cx('file_post')}>
-                                <img
-                                    src="https://scontent.fsgn2-8.fna.fbcdn.net/v/t39.30808-6/451342439_1545279516420145_664382896184158578_n.jpg?stp=dst-jpg_s600x600&_nc_cat=102&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeEtuooj7cntrEsyS3BI2qyHQrU2AFLPZpNCtTYAUs9mkzrpY2pD6_iv9FlZyhceycfj5e9SPg2qhA7bXxn-XCls&_nc_ohc=MmZ5MF3JLYYQ7kNvgHft24g&_nc_zt=23&_nc_ht=scontent.fsgn2-8.fna&_nc_gid=AQjnXq8jnQH4TA9ys9-kvYX&oh=00_AYD4C1xmRYphJ_489MmztS-XieVXUbqUbbyVlBA5_48fCg&oe=671566A6"
-                                    alt=""
-                                    onDoubleClick={handleLike}
-                                />
-                            </div>
-                            {showHeart && (
-                                <div
-                                    className={cx('show_heart')}
-                                    style={like ? { color: '#d63232' } : { color: '#fff' }}
-                                >
-                                    <BiSolidHeart />
+            <div className={cx('wrapper_post')}>
+                {post && (
+                    <>
+                        <div className={cx('wr_post')}>
+                            <div className={cx('head_post')}>
+                                <div className={cx('avatar_post')}>
+                                    <img className={cx('avatar')} src={post.User.avatar} />
                                 </div>
-                            )}
-                        </div>
-                        <div className={cx('interact')}>
-                            <button onClick={handleLike} className={cx('like')}>
-                                {like ? <BiSolidHeart style={{ color: '#d63232' }} /> : <BiHeart />}{' '}
-                            </button>
-                            <label>{countLike}</label>
-                            <button className={cx('comment')}>
-                                <BiMessageRounded />{' '}
-                            </button>{' '}
-                            <label>{countComment}</label>
-                            <button className={cx('share')}>
-                                <BiShare />
-                            </button>{' '}
-                            <label>Share</label>
-                        </div>
-                    </div>
-                </div>
-                <div className={cx('tittle_comment')}>Comment</div>
-                {posts.map((post, index) => (
-                    <div className={cx('wr_comment')}>
-                        <div className={cx('comment')}>
-                            <div className={cx('wr_avatar')}>
-                                <img
-                                    src="https://scontent.fsgn2-8.fna.fbcdn.net/v/t39.30808-6/451342439_1545279516420145_664382896184158578_n.jpg?stp=dst-jpg_s600x600&_nc_cat=102&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeEtuooj7cntrEsyS3BI2qyHQrU2AFLPZpNCtTYAUs9mkzrpY2pD6_iv9FlZyhceycfj5e9SPg2qhA7bXxn-XCls&_nc_ohc=MmZ5MF3JLYYQ7kNvgHft24g&_nc_zt=23&_nc_ht=scontent.fsgn2-8.fna&_nc_gid=AQjnXq8jnQH4TA9ys9-kvYX&oh=00_AYD4C1xmRYphJ_489MmztS-XieVXUbqUbbyVlBA5_48fCg&oe=671566A6"
-                                    alt=""
-                                />
-                            </div>
-                            <div className={cx('content')}>
-                                <p className={cx('user_id')}>user_id </p>
-                                <p className={cx('content_des')}>{post.text}</p>
-                            </div>
-                            <div className={cx('wr_btn_up_comment')}>
-                                <div className={cx('menu')}>
-                                    <Button
-                                        id="fade-button"
-                                        aria-controls={open ? 'fade-menu' : undefined}
-                                        aria-haspopup="true"
-                                        aria-expanded={open ? 'true' : undefined}
-                                        onClick={handleClick}
-                                        className={cx('btn_menu')}
-                                    >
-                                        ...
-                                    </Button>
-                                    <Menu
-                                        className={cx('wr_menu')}
-                                        id="fade-menu"
-                                        MenuListProps={{
-                                            'aria-labelledby': 'fade-button',
-                                        }}
-                                        anchorEl={anchorEl}
-                                        open={open}
-                                        onClose={handleClose}
-                                        TransitionComponent={Fade}
-                                    >
-                                        <MenuItem
-                                            className={cx('menu_item')}
-                                            onClick={() => handleEditComment(post.id, post.text)}
-                                        >
-                                            Chỉnh sửa
-                                        </MenuItem>
-                                        <MenuItem onClick={handleDelete}>Xoá bài viết</MenuItem>
-                                    </Menu>
+                                <div className={cx('user_id_day')}>
+                                    <p>{post.User.username}</p>
+                                    <span>01/01/2024</span>
                                 </div>
-                                {/* <button className={cx('btn_delete')} key={post.id} onClick={handleUpLoad}>
-                                    Xoá
-                                </button> */}
                             </div>
-                        </div>
-                        {btnDelete && (
-                            <div className={cx('wr_position_up_post')}>
-                                <div className={cx('relative_wr')}>
-                                    <div ref={containerRef} className={cx('position_wr_add_post')}>
-                                        <div className={cx('tittle_delete')}>Xác nhận xoá</div>
-                                        <div className={cx('wr_btn_del_comment')}>
-                                            <button
-                                                key={post.id}
-                                                className={cx('btn_delete_comment')}
-                                                onClick={() => deleteComment((post.id = index))}
-                                            >
-                                                Xoá
-                                            </button>
-                                        </div>
+
+                            <div className={cx('content_post')}>
+                                <div className={cx('content')}>
+                                    <p>{post.content}</p>
+                                    <div className={cx('file_post')}>
+                                        {post.Image && post.Image.img_url ? (
+                                            <img src={post.Image.img_url} alt="" onDoubleClick={handleLike} />
+                                        ) : (
+                                            <></>
+                                        )}
                                     </div>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Render màn hình chỉnh sửa khi click chỉnh sửa */}
-                        {editComment && (
-                            <div className={cx('wr_position_up_post')} id={post.id}>
-                                <div className={cx('relative_wr')}>
-                                    {editingId === post.id && (
-                                        <div ref={containerRef} className={cx('position_wr_add_post')}>
-                                            <div className={cx('tittle_delete')}>Nhập bình luận mới</div>
-
-                                            <div className={cx('wr_inp_new_comment')}>
-                                                <input
-                                                    placeholder={post.text}
-                                                    type="text"
-                                                    onChange={(e) => setEditingText(e.target.value)}
-                                                />
-
-                                                <button onClick={handleSave} className={cx('btn_edit_comment')}>
-                                                    Đăng
-                                                </button>
-                                            </div>
+                                    {showHeart && (
+                                        <div
+                                            className={cx('show_heart')}
+                                            style={like ? { color: '#d63232' } : { color: '#fff' }}
+                                        >
+                                            <BiSolidHeart />
                                         </div>
                                     )}
                                 </div>
+                                <div className={cx('interact')}>
+                                    <button onClick={toggleLike} className={cx('like')}>
+                                        {like ? <BiSolidHeart style={{ color: '#d63232' }} /> : <BiHeart />}{' '}
+                                    </button>
+                                    <label>{post.Likes.length}</label>
+                                    <button className={cx('comment')}>
+                                        <BiMessageRounded />{' '}
+                                    </button>{' '}
+                                    <label></label>
+                                    <button className={cx('share')}>
+                                        <BiShare />
+                                    </button>{' '}
+                                    <label>Share</label>
+                                </div>
                             </div>
-                        )}
-                    </div>
-                ))}
+                        </div>
+                        <div className={cx('tittle_comment')}>Comment</div>
+                        <div className={cx('wr_comment')}>
+                            {post.Comments && post.Comments.length ? (
+                                post.Comments.map((comment) =>
+                                    comment.post_id === post.id ? (
+                                        <div className={cx('comment')} key={comment.id}>
+                                            {/* Render avatar của comment */}
+                                            {users.map((user) =>
+                                                user.id === comment.user_id ? (
+                                                    <>
+                                                        <div className={cx('wr_avatar')} key={user.id}>
+                                                            <img src={user.avatar} alt="avatar user comment" />
+                                                        </div>
 
-                <div className={cx('wr_inp_comment')}>
-                    <input
-                        maxLength={100}
-                        value={inputValue}
-                        onChange={handleInputChange}
-                        type="text"
-                        placeholder="Nhập Bình Luận ..."
-                    />
-                    <button type="submit" onClick={handlePostSubmit}>
-                        Đăng
-                    </button>
-                </div>
+                                                        <div className={cx('content')}>
+                                                            <p className={cx('user_id')}>{user.username}</p>
+                                                            <p className={cx('content_des')}>
+                                                                {comment.comment_content}
+                                                            </p>
+                                                        </div>
+                                                    </>
+                                                ) : (
+                                                    <></>
+                                                ),
+                                            )}
+
+                                            <div className={cx('wr_btn_up_comment')}>
+                                                <div className={cx('menu')}>
+                                                    <Button
+                                                        id="fade-button"
+                                                        aria-controls={open ? 'fade-menu' : undefined}
+                                                        aria-haspopup="true"
+                                                        aria-expanded={open ? 'true' : undefined}
+                                                        onClick={handleClick}
+                                                        className={cx('btn_menu')}
+                                                    >
+                                                        ...
+                                                    </Button>
+                                                    <Menu
+                                                        className={cx('wr_menu')}
+                                                        id="fade-menu"
+                                                        MenuListProps={{
+                                                            'aria-labelledby': 'fade-button',
+                                                        }}
+                                                        anchorEl={anchorEl}
+                                                        open={open}
+                                                        onClose={handleClose}
+                                                        TransitionComponent={Fade}
+                                                    >
+                                                        <MenuItem
+                                                            className={cx('menu_item')}
+                                                            onClick={() => handleEditComment(post.id, post.text)}
+                                                        >
+                                                            Chỉnh sửa
+                                                        </MenuItem>
+                                                        <MenuItem onClick={handleDelete}>Xoá bài viết</MenuItem>
+                                                    </Menu>
+                                                </div>
+                                            </div>
+                                            {btnDelete && (
+                                                <div className={cx('wr_position_up_post')}>
+                                                    <div className={cx('relative_wr')}>
+                                                        <div ref={containerRef} className={cx('position_wr_add_post')}>
+                                                            <div className={cx('tittle_delete')}>Xác nhận xoá</div>
+                                                            <div className={cx('wr_btn_del_comment')}>
+                                                                <button
+                                                                    onClick={() => handleDeleteComment(comment.id)}
+                                                                    key={post.id}
+                                                                    className={cx('btn_delete_comment')}
+                                                                >
+                                                                    Xoá
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
+                                            <>
+                                                {editComment && (
+                                                    <div className={cx('wr_position_up_post')}>
+                                                        <div className={cx('relative_wr')}>
+                                                            {/* {editingId === post.id && ( */}
+                                                            <div
+                                                                ref={containerRef}
+                                                                className={cx('position_wr_add_post')}
+                                                            >
+                                                                <div className={cx('tittle_delete')}>
+                                                                    Nhập bình luận mới
+                                                                </div>
+
+                                                                <div className={cx('wr_inp_new_comment')}>
+                                                                    <form
+                                                                        onSubmit={(e) =>
+                                                                            handleUpdateComment(comment.id, e)
+                                                                        }
+                                                                    >
+                                                                        <input
+                                                                            value={newContent}
+                                                                            placeholder={comment.comment_content}
+                                                                            type="text"
+                                                                            onChange={(e) =>
+                                                                                setNewContent(e.target.value)
+                                                                            }
+                                                                        />
+
+                                                                        <button
+                                                                            type="submit"
+                                                                            className={cx('btn_edit_comment')}
+                                                                        >
+                                                                            Đăng
+                                                                        </button>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                            {/* )} */}
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </>
+                                        </div>
+                                    ) : (
+                                        <></>
+                                    ),
+                                )
+                            ) : (
+                                <></>
+                            )}
+
+                            {/* Render màn hình chỉnh sửa khi click chỉnh sửa */}
+                        </div>
+
+                        <div className={cx('wr_inp_comment')}>
+                            <form onSubmit={(e) => handleSubmit(e, post.id)}>
+                                <input
+                                    maxLength={100}
+                                    value={content}
+                                    onChange={(e) => setContent(e.target.value)}
+                                    type="text"
+                                    placeholder="Nhập Bình Luận ..."
+                                    required
+                                />
+                                <button type="submit">Đăng</button>
+                            </form>
+                        </div>
+                    </>
+                )}
             </div>
             {/* Xử lí render info post */}
         </Fragment>

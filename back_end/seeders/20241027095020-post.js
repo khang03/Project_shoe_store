@@ -7,10 +7,15 @@ module.exports = {
     await queryInterface.bulkInsert('Posts', [
         {
           
+            id: 1,
+            content: 'content 1',
+            user_id: 1,
+            
+            createdAt: new Date(),
+            updatedAt: new Date()
+          },
           
-          createdAt: new Date(),
-          updatedAt: new Date()
-        },
+        
         
     ]);
 

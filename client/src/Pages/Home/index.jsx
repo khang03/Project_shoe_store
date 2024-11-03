@@ -12,23 +12,24 @@ const cx = classNames.bind(style);
 
 function Home() {
     // Khai báo State và Ref (khai báo biến ở đây)
-    const [showModalPost,setShowModalPost] = useState(false);
-    const [dataPosts, setDataPost] = useState([]);
-    
-    
-    useEffect(() => {    
-        axios.get('http://localhost:8080/users')
-            .then(response => setDataPost(response.data))
-            .catch(error => console.log('Không lấy được dữ liệu',error));
-    },[])
+    const [showModalPost, setShowModalPost] = useState(false);
 
+    const [posts, setPosts] = useState([]);
 
+    useEffect(() => {
+        axios
+            .get('http://localhost:8080/posts')
+            .then((response) => setPosts(response.data))
+            .catch((error) => console.log('Không lấy được dữ liệu', error));
+    }, []);
+    // console.log(dataUser);
+    
     return (
         <Fragment>
-            <div className={cx('wrapper')} style={{ height: '1000px' }}>
+            <div className={cx('wrapper')} >
                 <div className={cx('wr_startus')}>
                     <div className={cx('img_startus')}>
-                        <img alt='' src="" />
+                        <img alt="" src="" />
                     </div>
                     <div className={cx('des_startus')}>
                         <input placeholder="Có gì hot?" />
@@ -39,18 +40,15 @@ function Home() {
                         </button>
                     </div>
 
-                    {/* Xử lí render info post */}         
-                    {showModalPost && (<ModalPost closeModal={() => setShowModalPost(false)}  /> )}     
-
+                    {/* Xử lí render info post */}
+                    {showModalPost && <ModalPost closeModal={() => setShowModalPost(false)} />}
                 </div>
 
-                {/* render ra các bài post */}
-                {dataPosts.map(dataItem => (     
-                        <div className="post" key={dataItem.id}>
-                            <PostUser dataItem={dataItem} />
-                        </div>                       
-                ))}
-    
+                
+                {/* Render component Post ra màn hình */}
+
+                <PostUser data={posts}/>
+
             </div>
         </Fragment>
     );

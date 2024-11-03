@@ -19,7 +19,14 @@ module.exports = (sequelize, DataTypes) => {
   }
   Image.init({
     img_url: DataTypes.STRING,
-    post_id: DataTypes.INTEGER
+    post_id:{
+      type: DataTypes.INTEGER,
+      references: {
+        model: 'posts',
+        key: 'post_id'
+      }
+    } 
+    
   }, {
     sequelize,
     modelName: 'Image',
