@@ -20,7 +20,7 @@ class PostController {
           attributes: ["id","user_id"]
         }
       ],
-      order: [['id', 'ASC']]
+      order: [['id', 'DESC']]
     })
       .then(posts => {
         res.json(posts);
@@ -46,16 +46,25 @@ class PostController {
         },
         {
           model: dbModel.Comment,
-          attributes: ["id","post_id", "comment_content","user_id"]
+          attributes: ["id","post_id", "comment_content","user_id"],
+          order: [["id", "DESC"]], // Sắp xếp comment theo ID giảm dần
+
+
         },{
           model: dbModel.Like,
           attributes: ["id","user_id"]
         }
+        
       ],
-      order: [['id', 'ASC']]
+
     })
 
     .then(posts => {
+      if (posts && posts.Comments) {
+        // Sắp xếp comments theo ID giảm dần
+        posts.Comments.sort((a, b) => b.id - a.id);
+    }
+
       res.json(posts);
     })
     .catch(error => {

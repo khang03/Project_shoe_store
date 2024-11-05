@@ -5,7 +5,7 @@ const dbModel = require("../models");
 class CommentController {
   // [GET] lấy danh sách bình luận của bài viết
   getCommentPost(req, res) {
-    dbModel.Comment.findAll()
+    dbModel.Comment.findAll({ order: [["id", "DESC"]] })
       .then((comments) => res.json(comments))
       .catch((err) => res.status(500).json(err));
   }
@@ -19,11 +19,12 @@ class CommentController {
   // [POST] tạo bình mới cho bài viết
   storeCommentPost(req, res) {
     // const {postId, user}
-    const { postId } = req.params; // Giả sử bạn đang thêm bình luận cho một bài viết theo ID
-    const { commentContent } = req.body;
+    // const {  } = req.params; // Giả sử bạn đang thêm bình luận cho một bài viết theo ID
+    const { comment_content, post_id } = req.body;
     dbModel.Comment.create({
-      comment_content: commentContent,
-      post_id: postId,
+      comment_content: comment_content,
+      post_id: post_id,
+      user_id: 1,
     })
       .then((newComment) => {
         res.status(201).json({

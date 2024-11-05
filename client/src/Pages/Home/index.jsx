@@ -13,20 +13,22 @@ const cx = classNames.bind(style);
 function Home() {
     // Khai báo State và Ref (khai báo biến ở đây)
     const [showModalPost, setShowModalPost] = useState(false);
+    console.log('trang page home ');
 
     const [posts, setPosts] = useState([]);
 
     useEffect(() => {
+        
         axios
             .get('http://localhost:8080/posts')
             .then((response) => setPosts(response.data))
             .catch((error) => console.log('Không lấy được dữ liệu', error));
     }, []);
     // console.log(dataUser);
-    
+
     return (
         <Fragment>
-            <div className={cx('wrapper')} >
+            <div className={cx('wrapper')}>
                 <div className={cx('wr_startus')}>
                     <div className={cx('img_startus')}>
                         <img alt="" src="" />
@@ -44,11 +46,9 @@ function Home() {
                     {showModalPost && <ModalPost closeModal={() => setShowModalPost(false)} />}
                 </div>
 
-                
                 {/* Render component Post ra màn hình */}
 
-                <PostUser data={posts}/>
-
+                <PostUser data={posts} />
             </div>
         </Fragment>
     );

@@ -93,18 +93,21 @@ const PostUser = ( {data} ) => {
     const goToDetail = (id) => {
         navigate(`/DetailPost/${id}`);
     };
-    console.log(data);
+    // console.log(data.Images);
     
 
     return (
         <>
-                {data.map(item => (
-                    <div className={cx('post')} key={item.id}>
+                {data.map((item, index) => (
+                    
+                    
+                    <div className={cx('post')} key={index}>
                     <>
                         <div className={cx('wr_startus_post')}>
                             <div className={cx('img_startus')}>
                                 <img alt="" src={item.User.avatar} />
                             </div>
+                            {console.log(item.id)}
                             <div className={cx('wr_des_post')}>
                                 <div className={cx('user_id')}>{item.User.username}</div>
                                 <div className={cx('des_post')}>
@@ -113,13 +116,16 @@ const PostUser = ( {data} ) => {
                             </div>
                         </div>
                         <div className={cx('wr_image_post')}>
-                            {item.Image && item.Image.img_url ? (
 
-                                <img alt="" className={cx('image_post')} src={item.Image.img_url} />
-                            ): (
-                                <div></div>
+                                {item.Images.map((image, index) => (
 
-                            )}
+                                        <img key={index} alt="" className={cx('image_post')} src={image.img_url} />
+                                 
+                                    
+                                ))}
+                        
+
+       
                         </div>
 
                         <div className={cx('interact')}>
