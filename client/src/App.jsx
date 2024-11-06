@@ -5,6 +5,9 @@ import { DefaultLayout } from '~/components/Layout';
 import HeaderOnlyLayout from './components/Layout/HeaderOnlyLayout';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Switch } from '@mui/material';
+import Find from './Pages/Find';
+import ProfileOther from './Pages/ProfileOther';
 
 function App() {
     
@@ -36,6 +39,14 @@ function App() {
                                 }
                             ></Route>
                         );
+                        return (
+                            <Router>
+                                <Switch>
+                                  <Route path="/" exact component={Find}/>
+                                  <Route path="/user/:username" component={ProfileOther}/>
+                                </Switch>
+                            </Router>
+                        )
                     })}
                 </Routes>
                 {/* Gửi thông báo toàn trang */}

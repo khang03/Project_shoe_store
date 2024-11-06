@@ -3,27 +3,51 @@ import style from './Find.module.scss';
 import { BiSearch } from 'react-icons/bi';
 import { useEffect, useState } from 'react';
 import { Box, Card, Typography } from '@mui/material';
+import axios from 'axios';
+import { useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const cx = classNames.bind(style);
-const arr_user = [
-    { user_id: 1, user_name: 'Nguyễn An', content: 'Đã thích bài viết của bạn' },
-    { user_id: 2, user_name: 'Trần Bình', content: 'Đã thích bài viết của bạn' },
-    { user_id: 3, user_name: 'Lê Cường', content: 'Đã thích bài viết của bạn' },
-    { user_id: 4, user_name: 'Phạm Duy', content: 'Đã thích bài viết của bạn' },
-    { user_id: 5, user_name: 'Đỗ Hà', content: 'Đã thích bài viết của bạn' },
-    { user_id: 6, user_name: 'Vũ Hải', content: 'Đã thích bài viết của bạn' },
-    { user_id: 7, user_name: 'Bùi Kiên', content: 'Đã thích bài viết của bạn' },
-    { user_id: 8, user_name: 'Ngô Lan', content: 'Đã thích bài viết của bạn' },
-    { user_id: 9, user_name: 'Dương Mai', content: 'Đã thích bài viết của bạn' },
-    { user_id: 10, user_name: 'Lý Nam', content: 'Đã thích bài viết của bạn' },
-];
+// const arr_user = [
+//     { user_id: 1, user_name: 'Nguyễn An', content: 'Đã thích bài viết của bạn' },
+//     { user_id: 2, user_name: 'Trần Bình', content: 'Đã thích bài viết của bạn' },
+//     { user_id: 3, user_name: 'Lê Cường', content: 'Đã thích bài viết của bạn' },
+//     { user_id: 4, user_name: 'Phạm Duy', content: 'Đã thích bài viết của bạn' },
+//     { user_id: 5, user_name: 'Đỗ Hà', content: 'Đã thích bài viết của bạn' },
+//     { user_id: 6, user_name: 'Vũ Hải', content: 'Đã thích bài viết của bạn' },
+//     { user_id: 7, user_name: 'Bùi Kiên', content: 'Đã thích bài viết của bạn' },
+//     { user_id: 8, user_name: 'Ngô Lan', content: 'Đã thích bài viết của bạn' },
+//     { user_id: 9, user_name: 'Dương Mai', content: 'Đã thích bài viết của bạn' },
+//     { user_id: 10, user_name: 'Lý Nam', content: 'Đã thích bài viết của bạn' },
+// ];
+
+
 
 function Find() {
     const [data, setData] = useState([]);
 
-    useEffect(() => {
-        setData([...arr_user]);
-    }, []);
+    // useEffect(() => {
+    //     setData([...arr_user]);
+    // }, []);
+
+    const [username , setUsername] = useState(''); //lưu giá trị nhập vào mảng 
+    const [users , setUsers] = useState([]);  // lưu keeeesrt quả tiềm kiếm 
+  
+        // useEffect(() => {
+        //     if(username.length === 0){
+        //         setUsers([]);
+        //         return;
+        //     }
+        // })
+        
+        const fetchUsers = async () => {
+            const response = await axios.get(`http://localhost:8080/users/${username}`);
+            setUsers(response.data);
+
+        };
+
+    console.log(users);
+    
 
     return (
         <div className={cx('wrapper')}>
@@ -33,16 +57,22 @@ function Find() {
                         <BiSearch />
                     </div>
                     <div className={cx('wr_search')}>
-                        <input placeholder="Nhập user id" />
+                        <input 
+                          type="text"
+                          value={username}
+                          onChange={(e) => setUsername(e.target.value)}
+                          placeholder="Nhập user name" />
+                    <button onClick={fetchUsers}>Tìm Kiếm </button>
                     </div>
                 </div>
             </div>
             <div className={cx('tittle_result')}>
                 <span>Kết quả</span>
             </div>
+            
 
             <div className={cx('wr_result')}>
-                {data.map((item, index) => (
+                {users.map((user) => (
                     <Card sx={{ my: 2, p: 2 }} variant="elevation">
                         <div className={cx('result')}>
                             <div className={cx('wr_img')}>
@@ -52,9 +82,13 @@ function Find() {
                                 />
                             </div>
                             <div className={cx('wr_info_user_find')}>
-                                <p className={cx('user_id')}>{item.user_name}</p>
-                                <p className={cx('user_name')}>{item.user_name}</p>
-                                <p>{item.content}.</p>
+                            
+                                <Link to={`/ProfileOther/${user.username}`}>{user.username}
+                                <p className={cx('user_id')}>{user.username}</p>
+                                <p className={cx('user_name')}>{user.name}</p>
+                                <p>{user.content}.</p>
+                                </Link>
+            
                             </div>
                         </div>
                     </Card>
@@ -88,5 +122,6 @@ function Find() {
         </div>
     );
 }
+
 
 export default Find;
