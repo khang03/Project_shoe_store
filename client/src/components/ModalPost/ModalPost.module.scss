@@ -42,8 +42,8 @@
         text-align: right;
         padding-right: 15px;
         margin-top: 20px;
-        top: 84px;
-        left: 100px;
+        top: 66px;
+        left: 116px;
 
         .btn_upload {
             height: 40px;
@@ -155,20 +155,21 @@
 }
 
 .btn_upl_stt {
-    height: 100%;
-    width: 20%;
-    align-content: center;
-    text-align: right;
-    padding-right: 15px;
+    // margin-top: 10px;
+    margin-right: 10px;
     .btn_turn_off_post {
-        height: 20px;
-        width: 20px;
         font-size: 30px;
-        margin-bottom: 50px;
         border-radius: 50%;
         background-color: #ffffff00;
         border: #9c939300;
         color: #a1a1a2;
-        padding: 0 30px;
+    }
+}
+.wr_title{
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    .title {
+        margin-left: 30px;
     }
 }

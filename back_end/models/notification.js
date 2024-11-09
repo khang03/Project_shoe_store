@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Notification.belongsTo(models.User, {
         foreignKey: 'user_id',
-        as: '1_user'
+        as: 'oneUser'
       })
     }
   }

@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Image.belongsTo(models.Post, {
         foreignKey: 'post_id',
-        as: '1_post'
+        as: 'onePost'
       })
     }
   }

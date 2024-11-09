@@ -12,12 +12,12 @@ module.exports = (sequelize, DataTypes) => {
 
       Friendship.belongsTo(models.User, {
         foreignKey: 'userid_1',
-        as: '1_user1'
+        as: 'oneUser1'
       })
 
       Friendship.belongsTo(models.User, {
         foreignKey: 'receiver_id',
-        as: '1_user2'
+        as: 'oneUser2'
       })
     }
   }

@@ -8,32 +8,34 @@ module.exports = (sequelize, DataTypes) => {
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
+     * Sử dụng alias (as:) để xác định được mối quan hệ của các bảng để lấy dữ liệu
+     * nếu không dùng thì khi truy vấn sẽ không xác định được
      */
     static associate(models) {
       // define association here
-      // Post.belongsTo(models.User,{
-      //   foreignKey: 'user_id',
-      //   as: '1_user'
-      // })
+      Post.belongsTo(models.User,{
+        foreignKey: 'user_id',
+        as: 'oneUser'
+      })
 
-      // Post.hasMany(models.Like, {
-      //   foreignKey: 'post_id',
-      //   as: 'n_like'
-      // })
+      Post.hasMany(models.Like, {
+        foreignKey: 'post_id',
+        as: 'manyLike'
+      })
 
-      // Post.hasMany(models.Image, {
-      //   foreignKey: 'post_id',
-      //   as: 'n_image'
-      // })
+      Post.hasMany(models.Image, {
+        foreignKey: 'post_id',
+        as: 'manyImage'
+      })
 
-      // Post.hasMany(models.Comment, {
-      //   foreignKey: 'post_id',
-      //   as: 'n_comment'
-      // })
-      Post.belongsTo(models.User, { foreignKey: 'user_id' });
-      Post.hasMany(models.Image, { foreignKey: 'post_id' });
-      Post.hasMany(models.Comment, { foreignKey: 'post_id' });
-      Post.hasMany(models.Like, { foreignKey: 'post_id' });
+      Post.hasMany(models.Comment, {
+        foreignKey: 'post_id',
+        as: 'manyComment'
+      })
+      // Post.belongsTo(models.User, { foreignKey: 'user_id' });
+      // Post.hasMany(models.Image, { foreignKey: 'post_id' });
+      // Post.hasMany(models.Comment, { foreignKey: 'post_id' });
+      // Post.hasMany(models.Like, { foreignKey: 'post_id' });
     }
   }
   Post.init(
