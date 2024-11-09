@@ -10,13 +10,6 @@ import PostUser from '~/components/PostUser';
 
 const cx = classNames.bind(style);
 
-const user_data = {
-    id: 1,
-    user_name: 'thekh4nq',
-    name: 'Nguyễn Thế Khang',
-    bio: 'Thích màu hồng, không giả dối.',
-    img: 'https://th.bing.com/th/id/OIP._9ASq3twoUAAMV6Xb-uvlwHaFm?rs=1&pid=ImgDetMain',
-};
 
 
 function Profile() {
@@ -135,12 +128,12 @@ function Profile() {
                         <div className={cx('wr_info')}>
                             <div className={cx('info')}>
                                 <h2>{user.name}</h2>
-                                <p className={cx('user_id')}>{user.user_name}</p>
+                                <p className={cx('user_id')}>{user.username}</p>
                                 <p className={cx('bio')}>{user.bio}</p>
                                 <p className={cx('sum_fr')}>Có 10 bạn bè</p>
                             </div>
                             <div className={cx('wr_img_info')}>
-                                <img src={user.img} alt="avata user" />
+                                <img src={user.avatar} alt="avata user" />
                             </div>
                         </div>
                         <div className={cx('wr_btn_edit_profile')} onClick={handleEdit}>
@@ -150,7 +143,7 @@ function Profile() {
 
                     <div className={cx('wr_upl')}>
                         <div className={cx('img_startus')}>
-                            <img src={user.img} />
+                            <img src={user.avatar} />
                         </div>
                         <div onClick={handleUpLoad} className={cx('des_startus')}>
                             <div className={cx('des')}>Có gì hot?</div>

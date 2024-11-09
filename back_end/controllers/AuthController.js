@@ -1,23 +1,12 @@
 const { where } = require("sequelize");
 const dbModel = require("../models");
+const bcrypt = require("bcryptjs"); // Thư viện để mã hóa mật khẩu
+const jwt = require("jsonwebtoken");
+require("dotenv").config(); // Đảm bảo dòng này xuất hiện trước khi sử dụng biến môi trường
 
- class AuthController {
+class AuthController {
 
-    // [POST] login 
-     login(req, res) {
-     }
-    // [POST] register
 
-    register() {
-
-    }
-
-    // [POST] logout
-
-    logout() {
-        
-    }
-
-    
- }
- module.exports = new AuthController();
+  
+}
+module.exports = new AuthController();

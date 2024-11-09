@@ -1,17 +1,17 @@
 const express = require('express');
 const app = express();
-const port = 8080
+const port = 8080;
 const routes = require('./routes');
 const cors = require('cors');
+const bodyParser = require('body-parser');
 
 
 
 // Allow all origins
 app.use(cors()); 
 
-// Middleware để parse Json
-app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+// Middleware để xử lý body (JSON)
+app.use(bodyParser.json());
 
 
 // Static files

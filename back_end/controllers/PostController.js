@@ -19,7 +19,7 @@ class PostController {
         },
         {
           model: dbModel.Comment,
-          attributes: ["id","post_id", "comment_content","user_id"]
+          attributes: ["id","post_id", "comment_content","user_id","createdAt"]
         },{
           model: dbModel.Like,
           attributes: ["id","user_id"]

@@ -13,7 +13,7 @@ import Login from '~/Pages/Login';
 const publicRoutes = [
     { path: '/', component: Home },
     { path: '/Profile', component: Profile },
-    { path: '/ProfileOther', component: ProfileOther },
+    { path: '/ProfileOther/:username', component: ProfileOther },
     { path: '/Notification', component: Notification },
     { path: '/Find', component: Find },
     { path: '/Chat', component: Chat, layout: HeaderOnlyLayout },

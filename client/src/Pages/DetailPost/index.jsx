@@ -6,12 +6,41 @@ import { Avatar, Button, Menu, MenuItem, Fade, Switch, FormControlLabel } from '
 import * as React from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import TimeUp from '~/components/TimeUp';
 
 const cx = classNames.bind(style);
 
 function DetailPost() {
     //lấy danh sách user
     const [users, setUsers] = useState([]);
+
+    //Lấy dữ liệu id người dùng khi đăng nhập
+    const [error, setError] = useState(null);
+    const [userId, setUserId] = useState({});
+
+    //Lấy token người dùng
+    const token = localStorage.getItem('authToken');
+
+    //Lấy dữ liệu userId khi đăng nhập vào
+    useEffect(() => {
+        const fetchUserData = async () => {
+            if (token) {
+                try {
+                    const response = await axios.get('http://localhost:8080/', {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    });
+                    setUserId(response.data);
+                } catch (err) {
+                    setError('Không thể lấy thông tin người dùng');
+                }
+            } else {
+                setError('Bạn chưa đăng nhập');
+            }
+        };
+        fetchUserData();
+    }, []);
 
     useEffect(() => {
         axios
@@ -25,7 +54,7 @@ function DetailPost() {
         };
     }, []);
 
-    const [post, setPost] = useState(null);
+    const [post, setPost] = useState({});
     const { id } = useParams();
     useEffect(() => {
         axios
@@ -41,8 +70,24 @@ function DetailPost() {
 
     // console.log(post);
 
+    //Xét true false render like-----------------------------------------------------------------------------------------------------
+    const [liked, setLiked] = useState(false);
+
+    // Kiểm tra trạng thái like khi component load
+    useEffect(() => {
+        const checkLikeStatus = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8080/likes/${userId.id}/${post.id}`);
+                setLiked(response.data.liked);
+                console.log(response.data.liked);
+            } catch (error) {
+                console.error('Error checking like status', error);
+            }
+        };
+        checkLikeStatus();
+    }, [userId.id, post.id]);
+
     //Xử lí nút like bài viết
-    const [like, setLike] = useState();
     const [countLike, setCountLike] = useState(0);
     const [showHeart, setShowHeart] = useState(false);
     // const handleLike = () => {
@@ -57,7 +102,7 @@ function DetailPost() {
     const handleLike = async () => {
         try {
             const response = await axios.post('http://localhost:8080/likes', {
-                user_id: 1,
+                user_id: userId.id,
                 post_id: post.id,
             });
 
@@ -69,14 +114,14 @@ function DetailPost() {
                         ...prevPost.Likes,
                         {
                             id: Math.floor(100 + Math.random() * 900),
-                            user_id: 1,
+                            user_id: userId.id,
                         },
                     ],
                     // Likes: 3,
                 };
             });
 
-            setLike(true);
+            setLiked(true);
             setShowHeart(true);
             setTimeout(() => {
                 setShowHeart(false);
@@ -93,28 +138,24 @@ function DetailPost() {
         try {
             const response = await axios.delete('http://localhost:8080/likes', {
                 data: {
-                    user_id: 1,
+                    user_id: userId.id,
                     post_id: post.id,
                 },
             });
 
             setPost((prevPost) => {
-                const updateLike = prevPost.Likes.filter((like) => like.user_id !== 1);
+                const updateLike = prevPost.Likes.filter((like) => like.user_id !== userId.id);
                 return {
                     ...prevPost,
                     Likes: updateLike,
                 };
             });
 
-            setLike(false);
+            setLiked(false);
             setShowHeart(true);
             setTimeout(() => {
                 setShowHeart(false);
             }, 1000);
-            setPost((prev) => ({
-                ...prev,
-                Comments: prev.Likes.length + 1,
-            }));
 
             console.log('Like added:', response.data);
         } catch (error) {
@@ -123,16 +164,17 @@ function DetailPost() {
     };
 
     const toggleLike = async () => {
-        if (like) {
+        if (liked) {
             await handleUnLike();
         } else {
             await handleLike();
         }
     };
-
+//----------------------------------------------------COMMENT-------------------------------------------------------------
     //Xử lí thêm bình luận
     const [content, setContent] = useState('');
     const [dataComment, setDataComment] = useState([]);
+    const [status, SetStatus] = useState(false);
 
     useEffect(() => {
         axios
@@ -143,33 +185,38 @@ function DetailPost() {
 
     //đăng bình luận
     const handleSubmit = async (e) => {
-        e.preventDefault(); // Ngừng load lại trang
-
         try {
             const response = await axios.post('http://localhost:8080/comments/', {
+                id: Math.floor(100 + Math.random() * 900),
+
                 comment_content: content,
-                user_id: 1,
+                user_id: userId.id,
                 post_id: post.id,
+                createdAt: Date.now().toLocaleString(),
             });
             console.log('Comment added:', response.data);
             setContent('');
 
-            setPost((prevPost) => {
-                return {
-                    ...prevPost,
-                    Comments: [
-                        ...prevPost.Comments,
-                        {
-                            
-                            user_id: 1,
-                            content_comment: content,
-                            post_id: post.id,
-                        },
-                    ],
-                };
-            });
+            // if(content.trim()){
 
-            
+            //    setPost((prevPost) => {
+            //         return {
+            //             ...prevPost,
+            //             Comments: [
+            //                 ...prevPost.Comments,
+            //                 {
+            //                     id: Math.floor(100 + Math.random() * 900),
+
+            //                     user_id: 1,
+            //                     content_comment: content,
+            //                     post_id: post.id,
+            //                 },
+            //             ],
+            //         };
+            //     });
+            // }
+
+            console.log(post);
             // setDataComment((prevComments) =>
             //     prevComments.map((comment) =>
             //         comment.id === commentId ? { ...comment, comment_content: newContent } : comment,
@@ -194,7 +241,6 @@ function DetailPost() {
     // }, []);
 
     // Xoá bình luận theo id bài viết
-    const [error, setError] = useState(null);
 
     const handleDeleteComment = async (commentId) => {
         try {
@@ -241,13 +287,15 @@ function DetailPost() {
     const [btnDelete, setBtnDelete] = useState(false);
     const [editComment, setEditComment] = useState(false);
     const [idComment, setIdComment] = useState(0);
+    const [editingCommentId, setEditingCommentId] = useState(null);
 
     //phan set true false cho man hinh up post-------------------------------------------------
-    const handleDelete = (commentId) => {
-        setBtnDelete(commentId);
+    const handleDelete = () => {
+        setBtnDelete(true);
         setAnchorEl(null);
     };
-    const handleEditComment = (id, text) => {
+    const handleEditComment = (commentId) => {
+        setEditingCommentId(commentId);
         setEditComment(true);
         setAnchorEl(null);
     };
@@ -292,7 +340,9 @@ function DetailPost() {
                                 </div>
                                 <div className={cx('user_id_day')}>
                                     <p>{post.User.username}</p>
-                                    <span>01/01/2024</span>
+                                    <span>
+                                        <TimeUp time={post.createdAt} />
+                                    </span>
                                 </div>
                             </div>
 
@@ -307,7 +357,7 @@ function DetailPost() {
                                     {showHeart && (
                                         <div
                                             className={cx('show_heart')}
-                                            style={like ? { color: '#d63232' } : { color: '#fff' }}
+                                            style={liked ? { color: '#d63232' } : { color: '#fff' }}
                                         >
                                             <BiSolidHeart />
                                         </div>
@@ -315,13 +365,13 @@ function DetailPost() {
                                 </div>
                                 <div className={cx('interact')}>
                                     <button onClick={toggleLike} className={cx('like')}>
-                                        {like ? <BiSolidHeart style={{ color: '#d63232' }} /> : <BiHeart />}{' '}
+                                        {liked ? <BiSolidHeart style={{ color: '#d63232' }} /> : <BiHeart />}{' '}
                                     </button>
                                     <label>{post.Likes.length}</label>
                                     <button className={cx('comment')}>
                                         <BiMessageRounded />{' '}
                                     </button>{' '}
-                                    <label></label>
+                                    <label>{post.Comments.length}</label>
                                     <button className={cx('share')}>
                                         <BiShare />
                                     </button>{' '}
@@ -330,27 +380,32 @@ function DetailPost() {
                             </div>
                         </div>
                         <div className={cx('tittle_comment')}>Comment</div>
-                        {post.Comments && post.Comments.length ? (
-                            post.Comments.map((comment, index) =>
-                                comment.post_id === post.id ? (
-                                    <div className={cx('wr_comment')} key={comment.id}>
-                                        <div className={cx('comment')} key={comment.id}>
+                        {post.Comments ? (
+                            post.Comments.map((comment, index) => (
+                                <div className={cx('wr_comment')} key={comment.id}>
+                                    {comment.post_id === post.id ? (
+                                        <div className={cx('comment')}>
                                             {/* Render avatar của comment */}
-                                            {users.map((user) =>
-                                                user.id === comment.user_id ? (
+                                            {users.map((user, index) =>
+                                                user.id === comment?.user_id ? (
                                                     <>
                                                         <div className={cx('wr_avatar')} key={user.id}>
                                                             <img src={user.avatar} alt="avatar user comment" />
                                                         </div>
 
                                                         <div className={cx('content')}>
-                                                            <p className={cx('user_id')}>{user.username}</p>
+                                                            <div className={cx('user_time')}>
+                                                                <p className={cx('user_id')}>{user.username} </p>
+                                                                <span>
+                                                                    <TimeUp time={comment?.createdAt} />
+                                                                </span>
+                                                            </div>
                                                             {comment.comment_content ? (
-
-                                                            <p className={cx('content_des')}>
-                                                                {comment.comment_content}
-                                                            </p>
-                                                            ): (
+                                                                <p className={cx('content_des')}>
+                                                                    {comment.comment_content}
+                                                                    
+                                                                </p>
+                                                            ) : (
                                                                 <></>
                                                             )}
                                                         </div>
@@ -359,109 +414,109 @@ function DetailPost() {
                                                     <></>
                                                 ),
                                             )}
-
-                                            <div className={cx('wr_btn_up_comment')}>
-                                                <div className={cx('menu')}>
-                                                    <Button
-                                                        id="fade-button"
-                                                        aria-controls={open ? 'fade-menu' : undefined}
-                                                        aria-haspopup="true"
-                                                        aria-expanded={open ? 'true' : undefined}
-                                                        onClick={handleClick}
-                                                        className={cx('btn_menu')}
-                                                    >
-                                                        ...{comment.id}
-                                                    </Button>
-                                                    <Menu
-                                                        key={comment.id}
-                                                        className={cx('wr_menu')}
-                                                        id="fade-menu"
-                                                        MenuListProps={{
-                                                            'aria-labelledby': 'fade-button',
-                                                        }}
-                                                        anchorEl={anchorEl}
-                                                        open={open}
-                                                        onClose={handleClose}
-                                                        TransitionComponent={Fade}
-                                                    >
-                                                        <MenuItem
-                                                            className={cx('menu_item')}
-                                                            onClick={() => handleEditComment(post.id, post.text)}
-                                                        >
-                                                            Chỉnh sửa
-                                                        </MenuItem>
-                                                        <MenuItem onClick={() => handleDelete(comment.id)}>
-                                                            Xoá bài viết {comment.id}{' '}
-                                                        </MenuItem>
-                                                    </Menu>
-                                                </div>
-                                            </div>
-                                            {btnDelete === comment.id && (
-                                                <div className={cx('wr_position_up_post')}>
-                                                    <div className={cx('relative_wr')}>
-                                                        <div ref={containerRef} className={cx('position_wr_add_post')}>
-                                                            <div className={cx('tittle_delete')}>
-                                                                Xác nhận xoá {comment.id}
-                                                            </div>
-                                                            <div className={cx('wr_btn_del_comment')}>
-                                                                <button
-                                                                    onClick={() => handleDeleteComment(comment.id)}
-                                                                    key={post.id}
-                                                                    className={cx('btn_delete_comment')}
-                                                                >
-                                                                    Xoá
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            )}
                                             <>
-                                                {editComment && (
-                                                    <div className={cx('wr_position_up_post')}>
-                                                        <div className={cx('relative_wr')}>
-                                                            {/* {editingId === post.id && ( */}
-                                                            <div
-                                                                ref={containerRef}
-                                                                className={cx('position_wr_add_post')}
+                                                {userId?.id === comment?.user_id ? (
+                                                    <div className={cx('wr_btn_up_comment')} key={comment?.id}>
+                                                        <div className={cx('menu')}>
+                                                            <Button
+                                                                key={comment?.id}
+                                                                id="fade-button"
+                                                                aria-controls={open ? 'fade-menu' : undefined}
+                                                                aria-haspopup="true"
+                                                                aria-expanded={open ? 'true' : undefined}
+                                                                onClick={() => handleEditComment(comment?.id)}
+                                                                className={cx('btn_menu')}
                                                             >
-                                                                <div className={cx('tittle_delete')}>
-                                                                    Nhập bình luận mới
-                                                                </div>
+                                                                Sửa
+                                                            </Button>
+                                                            <Button
+                                                                key={comment?.id}
+                                                                id="fade-button"
+                                                                aria-controls={open ? 'fade-menu' : undefined}
+                                                                aria-haspopup="true"
+                                                                aria-expanded={open ? 'true' : undefined}
+                                                                onClick={() => handleDeleteComment(comment?.id)}
+                                                                className={cx('btn_menu')}
+                                                            >
+                                                                Xoá
+                                                            </Button>
 
-                                                                <div className={cx('wr_inp_new_comment')}>
-                                                                    <form
-                                                                        onSubmit={() => handleUpdateComment(comment.id)}
-                                                                    >
-                                                                        <input
-                                                                            value={newContent}
-                                                                            placeholder={comment.comment_content}
-                                                                            type="text"
-                                                                            onChange={(e) =>
-                                                                                setNewContent(e.target.value)
-                                                                            }
-                                                                        />
+                                                            
 
-                                                                        <button
-                                                                            type="submit"
-                                                                            className={cx('btn_edit_comment')}
+                                                            {/* render ra cửa sổ xác nhận xoá bài viết */}
+                                                            {btnDelete && comment?.id && (
+                                                                <div
+                                                                    className={cx('wr_position_up_post')}
+                                                                    key={userId?.id}
+                                                                >
+                                                                    <div className={cx('relative_wr')}>
+                                                                        <div
+                                                                            ref={containerRef}
+                                                                            className={cx('position_wr_add_post')}
                                                                         >
-                                                                            Đăng
-                                                                        </button>
-                                                                    </form>
+                                                                            <div className={cx('tittle_delete')}>
+                                                                                Xác nhận xoá {comment.id}
+                                                                            </div>
+                                                                            <div className={cx('wr_btn_del_comment')}>
+                                                                                <button
+                                                                                    onClick={() =>
+                                                                                        handleDeleteComment(comment?.id)
+                                                                                    }
+                                                                                    key={post.id}
+                                                                                    className={cx('btn_delete_comment')}
+                                                                                >
+                                                                                    Xoá
+                                                                                </button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                            {/* )} */}
+                                                            )}
                                                         </div>
                                                     </div>
+                                                ) : (
+                                                    <></>
                                                 )}
                                             </>
+
+                                            <></>
                                         </div>
-                                    </div>
-                                ) : (
-                                    <></>
-                                ),
-                            )
+                                    ) : (
+                                        <></>
+                                    )}
+                                    <>
+                                        {editComment && editingCommentId === comment?.id && (
+                                            <div className={cx('wr_position_up_post')}>
+                                                <div className={cx('relative_wr')}>
+                                                    {/* {editingId === post.id && ( */}
+                                                    <div ref={containerRef} className={cx('position_wr_add_post')}>
+                                                        <div className={cx('tittle_delete')}>Nhập bình luận mới</div>
+
+                                                        <div className={cx('wr_inp_new_comment')}>
+                                                            <form onSubmit={() => handleUpdateComment(comment.id)}>
+                                                                <input
+                                                                    value={newContent}
+                                                                    placeholder={comment.comment_content}
+                                                                    type="text"
+                                                                    onChange={(e) => setNewContent(e.target.value)}
+                                                                />
+
+                                                                <button
+                                                                    type="submit"
+                                                                    className={cx('btn_edit_comment')}
+                                                                >
+                                                                    Đăng
+                                                                </button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                    {/* )} */}
+                                                </div>
+                                            </div>
+                                        )}
+                                    </>
+                                </div>
+                            ))
                         ) : (
                             <></>
                         )}
