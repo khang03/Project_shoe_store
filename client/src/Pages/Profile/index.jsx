@@ -8,77 +8,65 @@ import { BiXCircle, BiImageAdd, BiHeart, BiMessageRounded, BiShare, BiSolidHeart
 import { Avatar, Button, Menu, MenuItem, Fade, Switch, FormControlLabel } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import PostUser from '~/components/PostUser';
 
 const cx = classNames.bind(style);
 
-const user_data = {
-    id: 1,
-    user_name: 'thekh4nq',
-    name: 'Nguyễn Thế Khang',
-    bio: 'Thích màu hồng, không giả dối.',
-    img: 'https://th.bing.com/th/id/OIP._9ASq3twoUAAMV6Xb-uvlwHaFm?rs=1&pid=ImgDetMain',
-};
-const arr_post = [
-    {
-        post_id: 1,
-        description: 'Hôm nay buồn quá các bạn',
-        img: 'https://th.bing.com/th/id/OIP._9ASq3twoUAAMV6Xb-uvlwHaFm?rs=1&pid=ImgDetMain',
-    },
-    {
-        post_id: 2,
-        description: 'Khá đẹp trai',
-        img: 'https://th.bing.com/th/id/OIP.hvq1mk4KaOTVcy_L-CY5xgHaFb?w=231&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7',
-    },
-    {
-        post_id: 3,
-        description: 'Em khang mafia',
-        img: 'https://th.bing.com/th/id/OIP.XiwYd2wYl5HB7NVFZXe8gAHaHa?w=163&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7',
-    },
-    {
-        post_id: 4,
-        description: 'Có những thứ đâu phải nói z là z',
-        img: 'https://th.bing.com/th/id/OIP._9ASq3twoUAAMV6Xb-uvlwHaFm?rs=1&pid=ImgDetMain',
-    },
-    {
-        post_id: 5,
-        description: 'aaaaaaaaaaaaaaaaaaaaaaa',
-        img: 'https://th.bing.com/th/id/OIP._9ASq3twoUAAMV6Xb-uvlwHaFm?rs=1&pid=ImgDetMain',
-    },
-    {
-        post_id: 6,
-        description: 'Hello cả nhà yêu của Kem',
-        img: 'https://th.bing.com/th/id/OIP.SsnrO7pzZHaycvEAI7gQ2AHaEn?w=280&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7',
-    },
-    {
-        post_id: 7,
-        description: 'Olele Olala',
-        img: 'https://th.bing.com/th/id/OIP.6nDu0p6RwW2arJTCOU2pCQHaDt?w=327&h=174&c=7&r=0&o=5&dpr=1.3&pid=1.7',
-    },
-    {
-        post_id: 8,
-        description: 'Trời hôm nay nhiều mây cực',
-        img: 'https://th.bing.com/th/id/OIP._9ASq3twoUAAMV6Xb-uvlwHaFm?rs=1&pid=ImgDetMain',
-    },
-    {
-        post_id: 9,
-        description: 'Mẹ ơi, thằng con trai của mẹ là một thằng phản bội',
-        img: 'https://th.bing.com/th/id/OIP._9ASq3twoUAAMV6Xb-uvlwHaFm?rs=1&pid=ImgDetMain',
-    },
-    {
-        post_id: 10,
-        description: 'Hôm nay vui quá các bạn',
-        img: 'https://th.bing.com/th/id/OIP._9ASq3twoUAAMV6Xb-uvlwHaFm?rs=1&pid=ImgDetMain',
-    },
-];
+
+
 
 function Profile() {
     const [user, setUser] = useState(null);
     const [posts, setPosts] = useState([]);
+    const [error, setError] = useState('');
+    const navigate = useNavigate();
+
+
+    const token = localStorage.getItem('authToken')
+
+    console.log(token);
     
     useEffect(() => {
-        setUser(user_data)
-    setPosts(arr_post);
-    }, [])
+
+        const fetchUserData = async () => {
+            
+            
+            if (!token) {
+                navigate('/login');  // Nếu không có token, điều hướng về trang login
+                return;
+              }
+            if(token){
+                try{
+                    const response = await axios.get('http://localhost:8080/',{
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        }
+                    })
+                    setUser(response.data)
+                    
+                }catch(err){
+                    setError('Không thể lấy thông tin người dùng');
+
+                }
+            }else{
+                setError('Bạn chưa đăng nhập');
+
+            }
+        }
+        fetchUserData();    
+    }, [navigate])
+    
+    
+    
+  useEffect(() => {
+    const fetchPost = async () => {
+
+        const respose = await axios.get('http://localhost:8080/posts')
+        setPosts(respose.data)
+    }
+    fetchPost()
+  }, [])
+console.log(posts);
 
 
     
@@ -186,12 +174,12 @@ function Profile() {
                         <div className={cx('wr_info')}>
                             <div className={cx('info')}>
                                 <h2>{user.name}</h2>
-                                <p className={cx('user_id')}>{user.user_name}</p>
+                                <p className={cx('user_id')}>{user.username}</p>
                                 <p className={cx('bio')}>{user.bio}</p>
                                 <p className={cx('sum_fr')}>Có 10 bạn bè</p>
                             </div>
                             <div className={cx('wr_img_info')}>
-                                <img src={user.img} alt="avata user" />
+                                <img src={user.avatar} alt="avata user" />
                             </div>
                         </div>
                         <div className={cx('wr_btn_edit_profile')} onClick={handleEdit}>
@@ -201,7 +189,7 @@ function Profile() {
 
                     <div className={cx('wr_upl')}>
                         <div className={cx('img_startus')}>
-                            <img src={user.img} />
+                            <img src={user.avatar} />
                         </div>
                         <div onClick={handleUpLoad} className={cx('des_startus')}>
                             <div className={cx('des')}>Có gì hot?</div>
@@ -215,69 +203,75 @@ function Profile() {
 
                     {/* Phần bài viết trong trang cá nhân */}
                     {posts.map((item, index) => (
-                        <div className={cx('wr_post')}>
-                            <div className={cx('wr_image')}>
-                                <Avatar alt="My avatar" src={item.img} />
-                            </div>
-                            <div className={cx('container_post')}>
-                                <div className={cx('my_user')} key={item.id}>
-                                    <Link to={`/DetailPost/${item.id}`}>
-                                        <div className={cx('id_and_day')}>
-                                            <p>{item.user_id}</p>
-                                            <span>01/01/2024</span>
-                                        </div>
-                                    </Link>
-                                    <div className={cx('menu')}>
-                                        <Button
-                                            id="fade-button"
-                                            aria-controls={open ? 'fade-menu' : undefined}
-                                            aria-haspopup="true"
-                                            aria-expanded={open ? 'true' : undefined}
-                                            onClick={handleClick}
-                                            className={cx('btn_menu')}
-                                        >
-                                            ...
-                                        </Button>
-                                        <Menu
-                                            className={cx('wr_menu')}
-                                            id="fade-menu"
-                                            MenuListProps={{
-                                                'aria-labelledby': 'fade-button',
-                                            }}
-                                            anchorEl={anchorEl}
-                                            open={open}
-                                            onClose={handleClose}
-                                            TransitionComponent={Fade}
-                                        >
-                                            <MenuItem className={cx('menu_item')} onClick={handleClose}>
-                                                Chỉnh sửa
-                                            </MenuItem>
-                                            <MenuItem onClick={handleClose}>Xoá bài viết</MenuItem>
-                                        </Menu>
-                                    </div>
-                                </div>
-                                <div className={cx('des_post')}>
-                                    <p>{item.content}</p>
-                                </div>
-                                <div className={cx('file_post')}>
-                                    <img src={item.img} />
-                                </div>
-                                <div className={cx('interact')}>
-                                    <button onClick={handleLike} className={cx('like')}>
-                                        {like ? <BiSolidHeart style={{ color: 'red' }} /> : <BiHeart />}{' '}
-                                    </button>{' '}
-                                    <label>{countLike}</label>
-                                    <button className={cx('comment')} onClick={handleClickPage}>
-                                        <BiMessageRounded />{' '}
-                                    </button>{' '}
-                                    <label>Comment</label>
-                                    <button className={cx('share')}>
-                                        <BiShare />
-                                    </button>{' '}
-                                    <label>Share</label>
-                                </div>
-                            </div>
-                        </div>
+                        // <div className={cx('wr_post')}>
+                        //     <div className={cx('wr_image')}>
+                        //         <Avatar alt="My avatar" src={item.img} />
+                        //     </div>
+                        //     <div className={cx('container_post')}>
+                        //         <div className={cx('my_user')} key={item.id}>
+                        //             <Link to={`/DetailPost/${item.id}`}>
+                        //                 <div className={cx('id_and_day')}>
+                        //                     <p>{item.user_id}</p>
+                        //                     <span>01/01/2024</span>
+                        //                 </div>
+                        //             </Link>
+                        //             <div className={cx('menu')}>
+                        //                 <Button
+                        //                     id="fade-button"
+                        //                     aria-controls={open ? 'fade-menu' : undefined}
+                        //                     aria-haspopup="true"
+                        //                     aria-expanded={open ? 'true' : undefined}
+                        //                     onClick={handleClick}
+                        //                     className={cx('btn_menu')}
+                        //                 >
+                        //                     ...
+                        //                 </Button>
+                        //                 <Menu
+                        //                     className={cx('wr_menu')}
+                        //                     id="fade-menu"
+                        //                     MenuListProps={{
+                        //                         'aria-labelledby': 'fade-button',
+                        //                     }}
+                        //                     anchorEl={anchorEl}
+                        //                     open={open}
+                        //                     onClose={handleClose}
+                        //                     TransitionComponent={Fade}
+                        //                 >
+                        //                     <MenuItem className={cx('menu_item')} onClick={handleClose}>
+                        //                         Chỉnh sửa
+                        //                     </MenuItem>
+                        //                     <MenuItem onClick={handleClose}>Xoá bài viết</MenuItem>
+                        //                 </Menu>
+                        //             </div>
+                        //         </div>
+                        //         <div className={cx('des_post')}>
+                        //             <p>{item.content}</p>
+                        //         </div>
+                        //         <div className={cx('file_post')}>
+                        //             <img src={item.img} />
+                        //         </div>
+                        //         <div className={cx('interact')}>
+                        //             <button onClick={handleLike} className={cx('like')}>
+                        //                 {like ? <BiSolidHeart style={{ color: 'red' }} /> : <BiHeart />}{' '}
+                        //             </button>{' '}
+                        //             <label>{countLike}</label>
+                        //             <button className={cx('comment')} onClick={handleClickPage}>
+                        //                 <BiMessageRounded />{' '}
+                        //             </button>{' '}
+                        //             <label>Comment</label>
+                        //             <button className={cx('share')}>
+                        //                 <BiShare />
+                        //             </button>{' '}
+                        //             <label>Share</label>
+                        //         </div>
+                        //     </div>
+                        // </div>
+                        item.user_id === user.id ? (
+
+                            <PostUser item={item} />
+                        ):(
+                            <></>
+                        )
                     ))}
                 </div>
             )}

@@ -17,24 +17,40 @@ class CommentController {
   }
 
   // [POST] tạo bình mới cho bài viết
-  storeCommentPost(req, res) {
+  // [POST] tạo bình mới cho bài viết
+  async storeCommentPost(req, res) {
     // const {postId, user}
     // const {  } = req.params; // Giả sử bạn đang thêm bình luận cho một bài viết theo ID
-    const { comment_content, post_id } = req.body;
-    dbModel.Comment.create({
-      comment_content: comment_content,
-      post_id: post_id,
-      user_id: 1,
-    })
-      .then((newComment) => {
-        res.status(201).json({
-          message: "Comment added successfully",
-          comment: newComment,
-        });
-      })
-      .catch((err) =>
-        res.status(500).json({ error: "Failed to add comment", details: err })
-      );
+    const { comment_content, post_id, user_id } = req.body;
+    try {
+      dbModel.Comment.create({
+        comment_content: comment_content,
+        post_id: post_id,
+        user_id: user_id,
+      });
+
+      // Lấy thông tin bài viết (để lấy owner của bài viết)
+      const post = await dbModel.Post.findByPk(post_id);
+
+      if (!post) {
+        return res.status(404).json({ message: 'Post not found' });
+      }
+  
+      const postOwnerId = post.user_id; // Chủ bài viết
+  
+      // Tạo thông báo cho người sở hữu bài viết
+      const notification = await dbModel.Notification.create({
+        user_id: postOwnerId, // Gửi thông báo cho người sở hữu bài viết
+        message: `Bạn có một bình luận mới: ${comment_content}`,
+        post_id: 10, // Liên kết đến bài viết
+      });
+
+      res.status(200).json({ message: 'Comment added and notification sent', comment_content, notification });
+
+    } catch (error) {
+      console.error('Error adding comment:', error);
+      res.status(500).json({ message: 'Server error' });
+    }
   }
 
   // [PUT] sửa bình luận cho bài viết

@@ -34,6 +34,8 @@ module.exports = (sequelize, DataTypes) => {
       Post.hasMany(models.Image, { foreignKey: 'post_id' });
       Post.hasMany(models.Comment, { foreignKey: 'post_id' });
       Post.hasMany(models.Like, { foreignKey: 'post_id' });
+      Post.hasMany(models.Notification, { foreignKey: 'post_id' });
+      
     }
   }
   Post.init(

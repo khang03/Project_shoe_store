@@ -21,7 +21,6 @@ module.exports = (sequelize, DataTypes) => {
       // Like Reference
       User.hasMany(models.Like, {
         foreignKey: "user_id",
-        as: "n_like"
       })
       // Comment Reference
       User.hasMany(models.Comment, {
@@ -41,12 +40,10 @@ module.exports = (sequelize, DataTypes) => {
       // FriendShip Reference
       User.hasMany(models.Friendship , {
         foreignKey: 'userid_1',
-        as: 'n_user1'
       })
 
       User.hasMany(models.Friendship , {
         foreignKey: 'userid_2',
-        as: 'n_user2'
       })
 
       

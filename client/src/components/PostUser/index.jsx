@@ -4,75 +4,88 @@ import style from './PostUser.module.scss';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import TimeUp from '../TimeUp';
 
 const cx = classNames.bind(style);
 
-const PostUser = ( {data} ) => {
+const PostUser = ({ setPosts, user, item, index }) => {
+    //Tạo usestate lấy dữ liệu bài viết
 
-    
     // Xử lí nút like bài viết
-    const [like, setLike] = useState(false);
+    const [liked, setLiked] = useState(false);
     const [countLike, setCountLike] = useState(0);
-    const handleShowLike = () => {
-        setLike(true);
-        if (like) {
-            setCountLike(countLike - 1);
-        } else {
-            setCountLike(countLike + 1);
-        }
-        setLike(!like);
-    };
+    const [showHeart, setShowHeart] = useState(false);
+    const [likecount, setLikeCount] = useState();
+
+
+
+    //Xử lí like bài viết
 
     const handleLike = async (postId) => {
         try {
             const response = await axios.post('http://localhost:8080/likes', {
-                user_id: 1,
+                user_id: user.id,
                 post_id: postId,
             });
 
-            // setPost((prevPost) => ({
-            //     ...prevPost,
-            //     Likes: prevPost.Likes.length + 1,
-            // }));
+            setPosts((prevPosts) => {
+                return prevPosts.map((post) => {
+                    if (post.id === postId) {
+                        return {
+                            ...post,
+                            Likes: [
+                                ...post.Likes,
+                                {
+                                    id: Math.floor(100 + Math.random() * 900), // Tạo id ngẫu nhiên cho like
+                                    user_id: user.id, // Lưu id của người dùng
+                                },
+                            ],
+                        };
+                    }
+                    return post; // Không thay đổi bài viết khác
+                });
+            });
 
-            setLike(true);
-            // setShowHeart(true);
-            // setTimeout(() => {
-            //     setShowHeart(false);
-            // }, 1000);
+            setLiked(true);
+            setShowHeart(true);
+            setTimeout(() => {
+                setShowHeart(false);
+            }, 1000);
 
             console.log('Like added:', response.data);
         } catch (error) {
             console.error('Error adding like:', error);
         }
     };
-    // console.log(post);
-    
 
     //Xoá Like
-    const handleUnLike = async () => {
+    const handleUnLike = async (postId) => {
         try {
             const response = await axios.delete('http://localhost:8080/likes', {
                 data: {
-                    user_id: 1,
-                    post_id: data.id,
+                    user_id: user.id,
+                    post_id: postId,
                 },
             });
 
-            // setPost((prevPost) => ({
-            //     ...prevPost,
-            //     Likes: prevPost.Likes.length + 1,
-            // }))
+            setPosts((prevPosts) => {
+                return prevPosts.map((post) => {
+                  if (post.id === postId) {
+                    // Xoá like của người dùng hiện tại
+                    return {
+                      ...post,
+                      Likes: post.Likes.filter(like => like.user_id !== user.id), // Loại bỏ like của user
+                    };
+                  }
+                  return post; // Không thay đổi bài viết khác
+                });
+              });
 
-            setLike(false);
+            setLiked(false);
             // setShowHeart(true);
-            // setTimeout(() => {
-            //     setShowHeart(false);
-            // }, 1000);
-            // setPost((prev) => ({
-            //     ...prev,    
-            //     Comments: prev.Likes.length + 1,
-            // }))
+            setTimeout(() => {
+                setShowHeart(false);
+            }, 1000);
 
             console.log('Like added:', response.data);
         } catch (error) {
@@ -80,74 +93,79 @@ const PostUser = ( {data} ) => {
         }
     };
 
-    const toggleLike = async () => {
-        if (like) {
-            await handleUnLike();
+    const toggleLike = async (postId) => {
+        if (liked) {
+            await handleUnLike(postId);
         } else {
-            await handleLike();
+            await handleLike(postId);
         }
     };
+            // Kiểm tra trạng thái like khi component load
+            useEffect(() => {
+                const checkLikeStatus = async () => {
+                    try {
+                        const response = await axios.get(`http://localhost:8080/likes/${user.id}/${item.id}`);
+                        setLiked(response.data.liked);
+                        console.log(response.data.liked);
+                    } catch (error) {
+                        console.error('Error checking like status', error);
+                    }
+                };
+                checkLikeStatus();
+            }, [user, item]);
     //Sử dụng navigation để chuyển đến trang chi tiết bài viết
     const navigate = useNavigate();
 
     const goToDetail = (id) => {
-        navigate(`/DetailPost/${id}`);
+        navigate(`/DetailPost/${item.id}`);
     };
     // console.log(data.Images);
-    
 
     return (
         <>
-                {data.map((item, index) => (
-                    
-                    
-                    <div className={cx('post')} key={index}>
-                    <>
-                        <div className={cx('wr_startus_post')}>
-                            <div className={cx('img_startus')}>
-                                <img alt="" src={item.User.avatar} />
+            <div className={cx('post')} key={item.id}>
+                <>
+                    <div className={cx('wr_startus_post')}>
+                        <div className={cx('img_startus')}>
+                            <img alt="" src={item.User.avatar} />
+                        </div>
+                        <div className={cx('wr_des_post')}>
+                            <div className={cx('user_id')}>
+                                <p>{item.User.username}</p>{' '}
+                                <span>
+                                    <TimeUp time={item.createdAt} />
+                                </span>
                             </div>
-                            {console.log(item.id)}
-                            <div className={cx('wr_des_post')}>
-                                <div className={cx('user_id')}>{item.User.username}</div>
-                                <div className={cx('des_post')}>
-                                    <p>{item.content}</p>
-                                </div>
+                            <div className={cx('des_post')}>
+                                <p>{item.content}</p>
                             </div>
                         </div>
-                        <div className={cx('wr_image_post')}>
+                    </div>
+                    <div className={cx('wr_image_post')}>
+                        {item.Images.map((image, index) => (
+                            <img key={index} alt="" className={cx('image_post')} src={image.img_url} />
+                        ))}
+                    </div>
 
-                                {item.Images.map((image, index) => (
-
-                                        <img key={index} alt="" className={cx('image_post')} src={image.img_url} />
-                                 
-                                    
-                                ))}
-                        
-
-       
-                        </div>
-
-                        <div className={cx('interact')}>
-                            <button className={cx('like')} onClick={() => handleLike(item.id)}>
-                                {like ? <BiSolidHeart style={{ color: 'red' }} /> : <BiHeart />}{' '}
+                    <div className={cx('interact')}>
+                        <button className={cx('like')} onClick={() => toggleLike(item.id)}>
+                            {liked ? <BiSolidHeart style={{ color: 'red' }} /> : <BiHeart />}{' '}
+                        </button>{' '}
+                        <label>{item.Likes.length}</label>
+                        <Link to={`DetailPost/${item.id}`}>
+                            <button className={cx('comment')}>
+                                <BiMessageRounded />{' '}
                             </button>{' '}
-                            <label>{item.Likes.length}</label>
-                            <Link to={`DetailPost/${item.id}`}>
-                                <button className={cx('comment')}>
-                                    <BiMessageRounded />{' '}
-                                </button>{' '}
-                            </Link>
-                            <label>Comment</label>
-                            <button className={cx('share')}>
-                                <BiShare />
-                            </button>{' '}
-                            <label>Share</label>
-                        </div>
-                    </>
-    </div>
-                ))}
-                    
+                        </Link>
+                        <label>Comment</label>
+                        <button className={cx('share')}>
+                            <BiShare />
+                        </button>{' '}
+                        <label>Share</label>
+                    </div>
+                </>
+            </div>
+
             <hr />
         </>
     );
