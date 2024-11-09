@@ -14,7 +14,7 @@ class PostController {
         },
         {
           model: dbModel.Comment,
-          attributes: ["id","post_id", "comment_content","user_id"]
+          attributes: ["id","post_id", "comment_content","user_id","createdAt"]
         },{
           model: dbModel.Like,
           attributes: ["id","user_id"]
@@ -46,7 +46,7 @@ class PostController {
         },
         {
           model: dbModel.Comment,
-          attributes: ["id","post_id", "comment_content","user_id"],
+          attributes: ["id","post_id", "comment_content","user_id","createdAt"],
           order: [["id", "DESC"]], // Sắp xếp comment theo ID giảm dần
 
 

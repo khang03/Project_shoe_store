@@ -4,6 +4,7 @@ const notificationRouter = express.Router();
 
 
 
-
+// notificationRouter.get("/:id", notificationController.getNotification)
+notificationRouter.get("/:userId", notificationController.getNotification)
 
 module.exports = notificationRouter;

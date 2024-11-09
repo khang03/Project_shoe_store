@@ -7,18 +7,24 @@ import axios from 'axios';
 import style from './Home.module.scss';
 import PostUser from '~/components/PostUser';
 import ModalPost from '~/components/ModalPost';
+import { useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(style);
 
 function Home() {
     // Khai báo State và Ref (khai báo biến ở đây)
     const [showModalPost, setShowModalPost] = useState(false);
-    console.log('trang page home ');
 
     const [posts, setPosts] = useState([]);
 
+    //Tạo biến xét user id khi lấy token
+    const [user, setUser] = useState({});
+    const [error, setError] = useState('');
+    //
+    const navigate = useNavigate();
+
+    //Lấy dữ liệu bài viết
     useEffect(() => {
-        
         axios
             .get('http://localhost:8080/posts')
             .then((response) => setPosts(response.data))
@@ -26,29 +32,63 @@ function Home() {
     }, []);
     // console.log(dataUser);
 
+    //Lấy token người dùng
+    const token = localStorage.getItem('authToken');
+
+    //Lấy dữ liệu userId khi đăng nhập vào
+    useEffect(() => {
+        const fetchUserData = async () => {
+            if (!token) {
+                navigate('/login'); // Nếu không có token, điều hướng về trang login
+                return;
+            }
+
+            if (token) {
+                try {
+                    const response = await axios.get('http://localhost:8080/', {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    });
+                    setUser(response.data);
+                } catch (err) {
+                    setError('Không thể lấy thông tin người dùng');
+                }
+            } else {
+                setError('Bạn chưa đăng nhập');
+            }
+        };
+        fetchUserData();
+    }, []);
+
     return (
         <Fragment>
             <div className={cx('wrapper')}>
-                <div className={cx('wr_startus')}>
-                    <div className={cx('img_startus')}>
-                        <img alt="" src="" />
-                    </div>
-                    <div className={cx('des_startus')}>
-                        <input placeholder="Có gì hot?" />
-                    </div>
-                    <div className={cx('btn_upl_stt')}>
-                        <button onClick={() => setShowModalPost(!showModalPost)} className={cx('btn_upload')}>
-                            Đăng
-                        </button>
-                    </div>
+                {user && (
+                    <div className={cx('wr_startus')}>
+                        <div className={cx('img_startus')}>
+                            <img alt="" src={user.avatar} />
+                        </div>
+                        <div className={cx('des_startus')}>
+                            <input placeholder="Có gì hot?" />
+                        </div>
+                        <div className={cx('btn_upl_stt')}>
+                            <button onClick={() => setShowModalPost(!showModalPost)} className={cx('btn_upload')}>
+                                Đăng
+                            </button>
+                        </div>
 
-                    {/* Xử lí render info post */}
-                    {showModalPost && <ModalPost closeModal={() => setShowModalPost(false)} />}
-                </div>
+                        {/* Xử lí render info post */}
+                        {showModalPost && <ModalPost closeModal={() => setShowModalPost(false)} />}
+                    </div>
+                )}
 
                 {/* Render component Post ra màn hình */}
-
-                <PostUser data={posts} />
+                {posts.map((item, index) => (
+                    
+                        <PostUser setPosts={setPosts} user={user} key={item.id} item={item} index={index} />
+                    
+                ))}
             </div>
         </Fragment>
     );

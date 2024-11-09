@@ -130,6 +130,15 @@
             }
             .content {
                 width: 80%;
+                .user_time{
+                    width: 100%;
+                    display: flex;
+                    span{
+                        color: #636266;
+                        padding: 0 0 0 30px;
+
+                    }
+                }
                 .user_id {
                     font-weight: 600;
                 }
@@ -154,9 +163,12 @@
                     height: 100%;
                     .btn_menu {
                         color: #000000;
-                        font-size: 15px;
+                        font-size: 10px;
                         font-weight: bold;
                         border-radius: 15px;
+                    }
+                    .btn_menu:nth-child(2){
+                        color: red;
                     }
                     .wr_menu {
                         border-radius: 50%;

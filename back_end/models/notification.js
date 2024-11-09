@@ -11,14 +11,30 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Notification.belongsTo(models.User, {
         foreignKey: 'user_id',
-        as: '1_user'
       })
+      Notification.belongsTo(models.Post, {
+        foreignKey: 'post_id',
+      })
+
     }
   }
   Notification.init(
     {
       message: DataTypes.TEXT,
-      user_id: DataTypes.INTEGER,
+      user_id:{
+          type: DataTypes.INTEGER,
+          references: {
+            model: 'users',
+            key: 'id'
+          }
+      } ,
+      post_id:{
+        type: DataTypes.INTEGER,
+        references: {
+          model: 'posts',
+          key: 'id'
+        }
+    } 
     },
     {
       sequelize,

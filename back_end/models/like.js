@@ -12,12 +12,10 @@ module.exports = (sequelize, DataTypes) => {
 
       Like.belongsTo(models.Post , {
         foreignKey: 'post_id',
-        as: '1_post'
       })
 
       Like.belongsTo(models.User, {
         foreignKey: 'user_id',
-        as: '1_user'
       })
     }
   }

@@ -15,7 +15,43 @@ function ModalPost({ closeModal }) {
     const [image, setImage] = useState({ imgPreview: [], imgData: [] });
     const [messageErr, setMessageErr] = useState('');
     const [posts, setPosts] = useState([]);
+
+    //Lấy userId khi đăng nhập
+    const [user, setUser] = useState(null);
+    const [error, setError] = useState('');
+
+    //Lấy token người dùng
+    const token = localStorage.getItem('authToken')
+
+    //Lấy dữ liệu userId khi đăng nhập vào
+    useEffect(() => {
+
+        const fetchUserData = async () => {
+            
+            
+            
+            if(token){
+                try{
+                    const response = await axios.get('http://localhost:8080/profile',{
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        }
+                    })
+                    setUser(response.data)
+                    
+                }catch(err){
+                    setError('Không thể lấy thông tin người dùng');
+
+                }
+            }else{
+                setError('Bạn chưa đăng nhập');
+
+            }
+        }
+        fetchUserData();    
+    }, [])
     let maxCharacter = 500;
+
 
     useEffect(() => {
         // cleanup function
@@ -63,7 +99,7 @@ function ModalPost({ closeModal }) {
         });
 
         formData.append('contentPost', txtDesPost);
-        formData.append('idUser', 1);
+        formData.append('idUser', user.id);
 
         // Gửi dữ liệu và nhận phản hồi
         axios
@@ -76,7 +112,7 @@ function ModalPost({ closeModal }) {
                     
                 }
                 setPosts((prevPost) => [
-                    {id: response.data.id, content: response.data.content, user_id: 1},
+                    {id: response.data.id, content: response.data.content, user_id: user.id},
                     ...prevPost,
                 ])
             })

@@ -26,10 +26,18 @@
             width: 80%;
             padding: 20px 0;
             .user_id {
-                font-weight: bold;
+                display: flex;
+                p{
+                    font-weight: bold;
+
+                }
+                span{
+                    color: #88888b;
+                    padding: 0 0 0 30px;
+                }
             }
             .des_post {
-                color: #636266;
+                color: #1b1a1b;
             }
         }
     }
