@@ -189,6 +189,44 @@ class PostController {
       }
     }
 
+    // [DELETE] xóa bài viết
+  async destroy(req,res) {
+    const idPost = req.params.id;
+  
+    try {
+      // Tìm bài post cần xóa
+      const post = await dbModel.Post.findByPk(idPost);
+      if (!post) {
+        return res.status(404).json({ message: 'Bài viết không tồn tại' });
+      }
+
+      // Xóa các ảnh liên quan trong thư mục và CSDL
+      const images = await dbModel.Image.findAll({ where: { post_id: idPost } });
+      if (images.length > 0) {
+        images.forEach((image) => {
+            const imagePath = path.join(__dirname, '../uploads', image.img_url);
+            fs.unlink(imagePath, (err) => {
+                if (err) console.error('Lỗi khi xóa ảnh:', err);
+            });
+        });
+        await dbModel.Image.destroy({ where: { post_id: idPost } });
+      }
+
+      // Xóa các bình luận và like liên quan nếu có
+      await dbModel.Comment.destroy({ where: { post_id: idPost } });
+      await dbModel.Like.destroy({ where: { post_id: idPost } }); 
+
+      // Xóa bài post
+      await post.destroy();
+      
+      res.status(200).json({ message: 'Bài viết đã được xóa thành công' });
+    } catch (error) {
+      console.error('Lỗi khi xóa bài viết:', error);
+      res.status(500).json({ message: 'Có lỗi xảy ra khi xóa bài viết' });
+    }
+    
+  }
+
     
 }
 module.exports = new PostController();

@@ -56,6 +56,19 @@ const PostUser = ({ setPosts, user, item, index }) => {
         }))
     }
     
+    // handle Delete Post of user
+    const handleDeletePost = (id) => {
+        axios.delete(`http://localhost:8080/posts/delete/${id}`)
+         .then(response => {
+             toast(response.data.message, { position: 'bottom-center' });
+         })
+         .catch(error => {
+             if (error.response) {
+                 toast.error(error.response.data.message, { position: 'bottom-center' });
+             }
+         })
+        
+     }
 
     
 

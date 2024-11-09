@@ -10,4 +10,5 @@ postRouter.get("/:id", postController.getAllPostByIdUser);
 // Sử dụng middleware img trong route posts
 postRouter.post('/store',MiddlewareImg,postController.store);
 postRouter.put('/update/:id',MiddlewareImg,postController.update);
+postRouter.delete('/delete/:id',postController.destroy)
 module.exports = postRouter;    
