@@ -12,7 +12,7 @@ import Login from '~/Pages/Login';
 
 const publicRoutes = [
     { path: '/', component: Home },
-    { path: '/Profile', component: Profile },
+    { path: '/Profile/', component: Profile },
     { path: '/ProfileOther/:username', component: ProfileOther },
     { path: '/Notification', component: Notification },
     { path: '/Find', component: Find },

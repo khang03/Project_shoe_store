@@ -11,17 +11,21 @@ class PostController {
       include: [
         {
           model: dbModel.Image,
+          as: 'manyImage',
           attributes: ["img_url","post_id"],
         },
         {
           model: dbModel.User,
+          as:'oneUser',
           attributes: ["id", "username","avatar"],
         },
         {
           model: dbModel.Comment,
+          as: 'manyComment',
           attributes: ["id","post_id", "comment_content","user_id","createdAt"]
         },{
           model: dbModel.Like,
+          as: 'manyLike',
           attributes: ["id","user_id"]
         }
       ],
@@ -35,20 +39,57 @@ class PostController {
       });
   }
 
+  show(req, res) {
+    const { id } = req.params;
+
+    dbModel.Post.findByPk(id, {
+      include: [
+        {
+          model: dbModel.Image,
+          attributes: ["img_url","post_id"],
+          as:"manyImage"
+        },
+        {
+          model: dbModel.User,
+          attributes: ["id", "username","avatar"],
+          as:"oneUser"
+        },
+        {
+          model: dbModel.Comment,
+          attributes: ["id","post_id", "comment_content","user_id","createdAt"],
+          order: [["id", "DESC"]], // Sắp xếp comment theo ID giảm dần
+          as:"manyComment"
+        },{
+          model: dbModel.Like,
+          attributes: ["id","user_id"],
+          as:"manyLike"
+        }
+        
+      ],
+
+    })
+
+    .then(posts => {
+      if (posts && posts.Comments) {
+        // Sắp xếp comments theo ID giảm dần
+        posts.Comments.sort((a, b) => b.id - a.id);
+    }
+
+      res.json(posts);
+    })
+    .catch(error => {
+      res.status(500).json(error);
+    });
+      
+  }
+
     // [GET] lấy danh sách bài viết cụ thể
     getAllPostByIdUser(req, res) {
       const { id } = req.params;
-
+      
       dbModel.Post.findAll({
         where: {user_id: id},
-        attributes: {
-          include: [
-            [
-              Sequelize.fn("COUNT", Sequelize.col("manyLike.post_id")),
-              "likeCount" // Đếm số lượng like
-            ]
-          ]
-        },
+        
         include: [
           {
             model: dbModel.Image,
@@ -68,7 +109,7 @@ class PostController {
           {
             model: dbModel.Like,
             as: 'manyLike',
-            attributes: [],
+            attributes: ['post_id','user_id'],
           }
           
         ],

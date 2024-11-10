@@ -11,25 +11,25 @@ import TimeUp from '../TimeUp';
 
 const cx = classNames.bind(style);
 
+/* Mô tả đầu vào của component
+isActiveEdit(boolen): sử dụng khi cần render thêm chỉnh sửa, và xóa bài viết
+setPosts : ?
+user: truyền thông tin user vào component
+item: truyền 1 đối tượng post vào component
+index: ?
+*/
 
-
-const PostUser = ({ setPosts, user, item, index }) => {
+const PostUser = ({ isActiveEdit,setPosts, user, item, index }) => {
     //Tạo usestate lấy dữ liệu bài viết
-
+    console.log('hah');
+    console.log(item);
+    
     // Xử lí nút like bài viết
     const [liked, setLiked] = useState(false);
-    const [countLike, setCountLike] = useState(0);
     const [showHeart, setShowHeart] = useState(false);
-    const [likecount, setLikeCount] = useState();
     const [showModal, setShowModal] = useState(false);
     const [openMenus, setOpenMenus] = useState({});
     const [selectedModal, setSelectedModal] = useState({});
-
-
-
-    //Xử lí like bài viết
-
-    // Xử lí render menu của bài viết
     
     
     const handleClick = (id,event) => {
@@ -85,8 +85,8 @@ const PostUser = ({ setPosts, user, item, index }) => {
                     if (post.id === postId) {
                         return {
                             ...post,
-                            Likes: [
-                                ...post.Likes,
+                            manyLike: [
+                                ...post.manyLike,
                                 {
                                     id: Math.floor(100 + Math.random() * 900), // Tạo id ngẫu nhiên cho like
                                     user_id: user.id, // Lưu id của người dùng
@@ -126,7 +126,7 @@ const PostUser = ({ setPosts, user, item, index }) => {
                     // Xoá like của người dùng hiện tại
                     return {
                       ...post,
-                      Likes: post.Likes.filter(like => like.user_id !== user.id), // Loại bỏ like của user
+                      manyLike: post.manyLike.filter(like => like.user_id !== user.id), // Loại bỏ like của user
                     };
                   }
                   return post; // Không thay đổi bài viết khác
@@ -152,26 +152,20 @@ const PostUser = ({ setPosts, user, item, index }) => {
             await handleLike(postId);
         }
     };
-            // Kiểm tra trạng thái like khi component load
-            useEffect(() => {
-                const checkLikeStatus = async () => {
-                    try {
-                        const response = await axios.get(`http://localhost:8080/likes/${user.id}/${item.id}`);
-                        setLiked(response.data.liked);
-                        console.log(response.data.liked);
-                    } catch (error) {
-                        console.error('Error checking like status', error);
-                    }
-                };
-                checkLikeStatus();
-            }, [user, item]);
-    //Sử dụng navigation để chuyển đến trang chi tiết bài viết
-    const navigate = useNavigate();
+    // Kiểm tra trạng thái like khi component load
+    useEffect(() => {
+        const checkLikeStatus = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8080/likes/${user.id}/${item.id}`);
+                setLiked(response.data.liked);
+                console.log(response.data.liked);
+            } catch (error) {
+                console.error('Error checking like status', error);
+            }
+        };
+        checkLikeStatus();
+    }, [user, item]);
 
-    const goToDetail = (id) => {
-        navigate(`/DetailPost/${item.id}`);
-    };
-    // console.log(data.Images);
 
     return (
         <>
@@ -179,11 +173,11 @@ const PostUser = ({ setPosts, user, item, index }) => {
                 <>
                     <div className={cx('wr_startus_post')}>
                         <div className={cx('img_startus')}>
-                            <img alt="" src={item.User.avatar} />
+                            <img alt="" src={item.oneUser.avatar} />
                         </div>
                         <div className={cx('wr_des_post')}>
                             <div className={cx('user_id')}>
-                                <p>{item.User.username}</p>{' '}
+                                <p>{item.oneUser.username}</p>{' '}
                                 <span>
                                     <TimeUp time={item.createdAt} />
                                 </span>
@@ -191,8 +185,9 @@ const PostUser = ({ setPosts, user, item, index }) => {
                             <div className={cx('des_post')}>
                                 <p>{item.content}</p>
                             </div>
+                        </div>
 
-                            {isActiveEdit && (<div className={cx('menu')}>
+                        {isActiveEdit && (<div className={cx('menu')}>
                             
                                 <Button
                                     id="fade-button"
@@ -232,11 +227,10 @@ const PostUser = ({ setPosts, user, item, index }) => {
                                             txt={selectedModal.content}
                                             />
                             )}
-                        </div>
                     </div>
                     <div className={cx('wr_image_post')}>
-                        {item.Images.map((image, index) => (
-                            <img key={index} alt="" className={cx('image_post')} src={image.img_url} />
+                        {item.manyImage.map((image, index) => (
+                            <img key={index} alt="" className={cx('image_post')} src={`http://localhost:8080/uploads/${image.img_url}`} />
                         ))}
                     </div>
 
@@ -244,7 +238,7 @@ const PostUser = ({ setPosts, user, item, index }) => {
                         <button className={cx('like')} onClick={() => toggleLike(item.id)}>
                             {liked ? <BiSolidHeart style={{ color: 'red' }} /> : <BiHeart />}{' '}
                         </button>{' '}
-                        <label>{item.Likes.length}</label>
+                        <label>{item.manyLike.length}</label>
                         <Link to={`DetailPost/${item.id}`}>
                             <button className={cx('comment')}>
                                 <BiMessageRounded />{' '}

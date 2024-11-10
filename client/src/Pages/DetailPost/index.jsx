@@ -67,6 +67,8 @@ function DetailPost() {
             console.log('hihi');
         };
     }, [id]);
+    console.log(post);
+    
 
     // console.log(post);
 
@@ -110,8 +112,8 @@ function DetailPost() {
                 return {
                     ...prevPost,
                     // Likes: prevPost.Likes.length + 1,
-                    Likes: [
-                        ...prevPost.Likes,
+                    manyLike: [
+                        ...prevPost.manyLike,
                         {
                             id: Math.floor(100 + Math.random() * 900),
                             user_id: userId.id,
@@ -144,10 +146,10 @@ function DetailPost() {
             });
 
             setPost((prevPost) => {
-                const updateLike = prevPost.Likes.filter((like) => like.user_id !== userId.id);
+                const updateLike = prevPost.manyLike.filter((like) => like.user_id !== userId.id);
                 return {
                     ...prevPost,
-                    Likes: updateLike,
+                    manyLike: updateLike,
                 };
             });
 
@@ -197,24 +199,7 @@ function DetailPost() {
             console.log('Comment added:', response.data);
             setContent('');
 
-            // if(content.trim()){
-
-            //    setPost((prevPost) => {
-            //         return {
-            //             ...prevPost,
-            //             Comments: [
-            //                 ...prevPost.Comments,
-            //                 {
-            //                     id: Math.floor(100 + Math.random() * 900),
-
-            //                     user_id: 1,
-            //                     content_comment: content,
-            //                     post_id: post.id,
-            //                 },
-            //             ],
-            //         };
-            //     });
-            // }
+            
 
             console.log(post);
             // setDataComment((prevComments) =>
@@ -331,15 +316,15 @@ function DetailPost() {
     return (
         <Fragment>
             <div className={cx('wrapper_post')}>
-                {post && post.User && post.User.avatar && (
+                {post && post.oneUser && post.oneUser.avatar && (
                     <>
                         <div className={cx('wr_post')}>
                             <div className={cx('head_post')}>
                                 <div className={cx('avatar_post')}>
-                                    <img className={cx('avatar')} src={post.User.avatar} />
+                                    <img className={cx('avatar')} src={post.oneUser.avatar} />
                                 </div>
                                 <div className={cx('user_id_day')}>
-                                    <p>{post.User.username}</p>
+                                    <p>{post.oneUser.username}</p>
                                     <span>
                                         <TimeUp time={post.createdAt} />
                                     </span>
@@ -350,7 +335,7 @@ function DetailPost() {
                                 <div className={cx('content')}>
                                     <p>{post.content}</p>
                                     <div className={cx('file_post')}>
-                                        {post.Images.map((image, index) => (
+                                        {post.manyImage.map((image, index) => (
                                             <img key={index} src={image.img_url} alt="" onDoubleClick={handleLike} />
                                         ))}
                                     </div>
@@ -367,11 +352,11 @@ function DetailPost() {
                                     <button onClick={toggleLike} className={cx('like')}>
                                         {liked ? <BiSolidHeart style={{ color: '#d63232' }} /> : <BiHeart />}{' '}
                                     </button>
-                                    <label>{post.Likes.length}</label>
+                                    <label>{post.manyLike.length}</label>
                                     <button className={cx('comment')}>
                                         <BiMessageRounded />{' '}
                                     </button>{' '}
-                                    <label>{post.Comments.length}</label>
+                                    <label>{post.manyComment.length}</label>
                                     <button className={cx('share')}>
                                         <BiShare />
                                     </button>{' '}
@@ -380,8 +365,8 @@ function DetailPost() {
                             </div>
                         </div>
                         <div className={cx('tittle_comment')}>Comment</div>
-                        {post.Comments ? (
-                            post.Comments.map((comment, index) => (
+                        {post.manyComment ? (
+                            post.manyComment.map((comment, index) => (
                                 <div className={cx('wr_comment')} key={comment.id}>
                                     {comment.post_id === post.id ? (
                                         <div className={cx('comment')}>

@@ -46,7 +46,7 @@ function Find() {
 
         };
 
-    console.log(users);
+    console.log(username);
     
 
     return (

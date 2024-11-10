@@ -22,6 +22,7 @@ function Home() {
     const [error, setError] = useState('');
     //
     const navigate = useNavigate();
+    console.log(user.avatar);
 
     //Lấy dữ liệu bài viết
     useEffect(() => {
@@ -79,15 +80,14 @@ function Home() {
                         </div>
 
                         {/* Xử lí render info post */}
-                        {showModalPost && <ModalPost closeModal={() => setShowModalPost(false)} />}
+                        {showModalPost && <ModalPost closeModal={() => setShowModalPost(false)} isActiveAdd nameModal='Đăng' idUser={user.id}/>}
                     </div>
                 )}
 
                 {/* Render component Post ra màn hình */}
                 {posts.map((item, index) => (
-                    
-                        <PostUser setPosts={setPosts} user={user} key={item.id} item={item} index={index} />
-                    
+                    // console.log(item)
+                    <PostUser setPosts={setPosts} user={user} key={item.id} item={item} index={index} />
                 ))}
             </div>
         </Fragment>

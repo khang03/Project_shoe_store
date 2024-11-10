@@ -13,25 +13,54 @@ const cx = classNames.bind(style);
 
 
 function Profile() {
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState({});
     const [posts, setPosts] = useState([]);
-    const [idUser,setIdUser] = useState(1); 
+    const [error, setError] = useState('');
+    const navigate = useNavigate();
+
+    // Tạo biến lấy token
+    const token = localStorage.getItem('authToken')
+
+    useEffect(() => {
+        const fetchUserData = async () => {   
+
+            if (!token) {
+                navigate('/login');  // Nếu không có token, điều hướng về trang login
+                return;
+            }
+
+            if(token){
+                try{
+                    const response = await axios.get('http://localhost:8080/',{
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        }
+                    })
+                    setUser(response.data)      
+                }catch(err){
+                    setError('Không thể lấy thông tin người dùng');
+                }
+            }else{
+                setError('Bạn chưa đăng nhập');
+            }
+        }
+        fetchUserData();    
+    }, [navigate])
+    // Lấy thông tin post :id
+    
+    
     
     useEffect(() => {
         
-        axios.get(`http://localhost:8080/posts/${idUser}`)
+        axios.get(`http://localhost:8080/posts/user/${user.id}`)
             .then(response => setPosts(response.data.posts))
             .catch(error => {
                 console.log('Có lỗi ',error);
-                
             })
-    }, [])
+    }, [user])
     
     
-    useEffect(() => {
-        setUser(user_data);
-    },[])
-
+    
 
     
     //----------------------------------------------Phan xu li render up post---------------------------------------
@@ -130,7 +159,7 @@ function Profile() {
                                 <h2>{user.name}</h2>
                                 <p className={cx('user_id')}>{user.username}</p>
                                 <p className={cx('bio')}>{user.bio}</p>
-                                <p className={cx('sum_fr')}>Có 10 bạn bè</p>
+                                <p className={cx('sum_fr')}>Có 10 bạn bè</p>                               
                             </div>
                             <div className={cx('wr_img_info')}>
                                 <img src={user.avatar} alt="avata user" />
@@ -153,11 +182,12 @@ function Profile() {
                                 Đăng
                             </button>
                         </div>
+                        
                     </div>
 
-                    {/* Phần bài viết trong trang cá nhân */}
-                    
-                    <PostUser data={posts} isActiveEdit/> 
+                    {posts.map((item) => {
+                        return <PostUser setPosts={setPosts} userId={user.id} item={item} isActiveEdit/> 
+                    })}                    
                         
                 </div>
             )}

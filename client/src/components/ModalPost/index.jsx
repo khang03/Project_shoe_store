@@ -8,53 +8,14 @@ import { toast } from 'react-toastify';
 
 const cx = classNames.bind(style);
 
-function ModalPost({ isActiveAdd, isActiveEdit ,nameModal ='Name Modal' ,closeModal, imgs , txt, idPost }) {
+function ModalPost({ isActiveAdd, isActiveEdit ,nameModal ='Name Modal' ,closeModal, imgs , txt, idPost, idUser }) {
     // Khai báo State và Ref (khai báo biến ở đây)
     const refForm = useRef();
     const [txtDesPost, setTxtDesPost] = useState('');
     const [image, setImage] = useState({ imgPreview: [], imgData: [] });
     const [messageErr, setMessageErr] = useState('');
     const [posts, setPosts] = useState([]);
-
-    //Lấy userId khi đăng nhập
-    const [user, setUser] = useState(null);
-    const [error, setError] = useState('');
-
-    //Lấy token người dùng
-    const token = localStorage.getItem('authToken')
-
-    //Lấy dữ liệu userId khi đăng nhập vào
-    useEffect(() => {
-
-        const fetchUserData = async () => {
-            
-            
-            
-            if(token){
-                try{
-                    const response = await axios.get('http://localhost:8080/profile',{
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        }
-                    })
-                    setUser(response.data)
-                    
-                }catch(err){
-                    setError('Không thể lấy thông tin người dùng');
-
-                }
-            }else{
-                setError('Bạn chưa đăng nhập');
-
-            }
-        }
-        fetchUserData();    
-    }, [])
     let maxCharacter = 500;
-    console.log(image);
-    // console.log(imgs);
-    
-    // console.log(txtDesPost);
     
     useEffect(() => {
         if (imgs && imgs.length > 0) {
@@ -65,7 +26,7 @@ function ModalPost({ isActiveAdd, isActiveEdit ,nameModal ='Name Modal' ,closeMo
         }
     },[])
 
-
+    // Xóa ảnh 
     useEffect(() => {
         // cleanup function
         return () => {
@@ -73,6 +34,7 @@ function ModalPost({ isActiveAdd, isActiveEdit ,nameModal ='Name Modal' ,closeMo
         };
     }, [image]);
 
+    // Xử lý ảnh xem trước
     const handlePreviewImage = (e) => {
         const maxFile = 4;
         const files = Array.from(e.target.files);
@@ -90,15 +52,17 @@ function ModalPost({ isActiveAdd, isActiveEdit ,nameModal ='Name Modal' ,closeMo
     const handleSubmit = async (e) => {
         e.preventDefault();
         let action = e.target.elements.action.value;
-
+        console.log(action);
+        
         const formData = new FormData();
         image.imgData.forEach((image) => {
             formData.append('images', image);
         });
         formData.append('contentPost', txtDesPost);
-        formData.append('idUser', user.id);
+        formData.append('idUser', idUser);
+        // formData.append('idPost', idPost);
 
-
+        
         if (action === 'update') {
             axios.put(`http://localhost:8080/posts/update/${idPost}`, formData)
                 .then(response => {
@@ -113,6 +77,8 @@ function ModalPost({ isActiveAdd, isActiveEdit ,nameModal ='Name Modal' ,closeMo
                     }
                 })
         }else if (action === 'add') {
+            
+            
             // Gửi dữ liệu và nhận phản hồi
             axios
             .post(`http://localhost:8080/posts/store`, formData)
@@ -120,11 +86,10 @@ function ModalPost({ isActiveAdd, isActiveEdit ,nameModal ='Name Modal' ,closeMo
                 if (response.status === 201) {
                     console.log(response.data);
                     closeModal();
-                    toast(response.data.message, { position: 'bottom-center' });
-                    
+                    toast(response.data.message, { position: 'bottom-center' });    
                 }
                 setPosts((prevPost) => [
-                    {id: response.data.id, content: response.data.content, user_id: user.id},
+                    {id: response.data.id, content: response.data.content, user_id: idUser},
                     ...prevPost,
                 ])
             })
@@ -182,7 +147,7 @@ function ModalPost({ isActiveAdd, isActiveEdit ,nameModal ='Name Modal' ,closeMo
 
                                 <div className={cx('wr_btn_upl_stt')}>
                                     {isActiveAdd && (
-                                        <button name='action' value='store' type="submit" className={cx('btn_upload')}>
+                                        <button name='action' value='add' type="submit" className={cx('btn_upload')}>
                                             Đăng
                                         </button>
                                     )}

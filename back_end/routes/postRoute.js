@@ -4,7 +4,8 @@ const MiddlewareImg = require('../middleware/middlewareImg.js')
 const postRouter = express.Router();
 
 postRouter.get("/", postController.index);
-postRouter.get("/:id", postController.getAllPostByIdUser);
+postRouter.get("/user/:id", postController.getAllPostByIdUser);
+postRouter.get("/:id", postController.show);
 // postRouter.get("/like", likeController.like);
 
 // Sử dụng middleware img trong route posts
