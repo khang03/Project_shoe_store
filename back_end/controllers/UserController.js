@@ -36,6 +36,29 @@ show(req, res) {
     });
 }
 
+  //[GET] lay user theo id
+  showById(req,res) {
+    const { id } = req.params; // Lấy username từ params URL
+ 
+  // Tìm người dùng theo username
+  dbModel.User.findAll({
+    where: { id } // Điều kiện tìm kiếm theo username
+  })
+    .then((user) => {
+      if (user) {
+        // Nếu tìm thấy người dùng, trả về dữ liệu
+        res.json(user);
+      } else {
+        // Nếu không tìm thấy người dùng, trả về lỗi 404
+        res.status(404).json({ error: "User not found" });
+      }
+    })
+    .catch((err) => {
+      // Xử lý lỗi nếu có trong quá trình tìm kiếm
+      res.status(500).json({ error: "An error occurred while fetching the user", details: err });
+    });
+  } 
+
   // [POST] xử lý thêm người dùng
   async register(req, res) {
     const { username, password, name, bio, avatar, email } = req.body;

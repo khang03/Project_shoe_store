@@ -4,6 +4,7 @@ const userRoute = require("./userRoute.js");
 const imageRouter = require("./imageRouter.js");
 const likeRouter = require("./likeRouter.js");
 const authRouter = require("./authRouter.js");
+const friendRouter = require("./friendRouter.js");
 const dbModel = require("../models");
 const notificationRouter = require("./notificationRoute.js");
 const MiddlewareUserLogin = require('../middleware/middlewareUserLogin.js')
@@ -19,6 +20,7 @@ function Routes(app) {
   app.use("/images", imageRouter);
   app.use("/likes", likeRouter);
   app.use("/login", authRouter)
+  app.use("/friend", friendRouter)
   app.use("/notification", notificationRouter)
   app.post('/login', (res, req) => {
     if(req.session.userId){

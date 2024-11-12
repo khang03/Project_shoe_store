@@ -41,12 +41,12 @@ function Find() {
         // })
         
         const fetchUsers = async () => {
-            const response = await axios.get(`http://localhost:8080/users/${username}`);
+            const response = await axios.get(`http://localhost:8080/users/search/${username}`);
             setUsers(response.data);
 
         };
 
-    console.log(username);
+    console.log(users);
     
 
     return (
@@ -83,7 +83,7 @@ function Find() {
                             </div>
                             <div className={cx('wr_info_user_find')}>
                             
-                                <Link to={`/ProfileOther/${user.username}`}>{user.username}
+                                <Link to={`/ProfileOther/${user.id}`}>
                                 <p className={cx('user_id')}>{user.username}</p>
                                 <p className={cx('user_name')}>{user.name}</p>
                                 <p>{user.content}.</p>
