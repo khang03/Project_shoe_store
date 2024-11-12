@@ -7,6 +7,8 @@ const userRouter = express.Router();
 
 userRouter.get("/", userController.index);
 userRouter.get("/:username", userController.show);
-// userRouter.post("/", userController.register);
+userRouter.get("/userId/:id", userController.getUserById);
+    userRouter.post("/store", userController.register);
+    userRouter.put("/:id", userController.update);
 // userRouter.get("/", MiddlewareUserLogin, userController.authenticateToken);
 module.exports = userRouter;

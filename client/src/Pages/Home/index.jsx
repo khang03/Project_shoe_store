@@ -22,7 +22,6 @@ function Home() {
     const [error, setError] = useState('');
     //
     const navigate = useNavigate();
-    console.log(user.avatar);
 
     //Lấy dữ liệu bài viết
     useEffect(() => {
@@ -66,7 +65,7 @@ function Home() {
         <Fragment>
             <div className={cx('wrapper')}>
                 {user && (
-                    <div className={cx('wr_startus')}>
+                    <div className={cx('wr_startus')} >
                         <div className={cx('img_startus')}>
                             <img alt="" src={user.avatar} />
                         </div>
@@ -80,7 +79,7 @@ function Home() {
                         </div>
 
                         {/* Xử lí render info post */}
-                        {showModalPost && <ModalPost closeModal={() => setShowModalPost(false)} isActiveAdd nameModal='Đăng' idUser={user.id}/>}
+                        {showModalPost && <ModalPost user={user} closeModal={() => setShowModalPost(false)} isActiveAdd nameModal='Đăng bài viết' idUser={user.id}/>}
                     </div>
                 )}
 

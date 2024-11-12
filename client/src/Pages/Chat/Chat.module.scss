@@ -13,6 +13,8 @@
             font-weight: 600;
             height: 170px;
             padding: 20px;
+            display: flex;
+            justify-content: space-between;
         }
         .user_chat {
             display: flex;
@@ -35,6 +37,34 @@
             background-color: #e1dfdf;
             cursor: pointer;
         }
+
+        .wr_find_user_chat{
+            position: relative;
+            width: 100%;
+            display: flex;
+            padding: 0 10px;
+            height: 30px;
+            margin-bottom: 10px;
+            input{
+                width: 100%;
+                border-radius: 15px;
+                padding: 0 10px;
+                
+            }
+            button{
+                top: 0;
+                bottom: 0;
+                width: 5%;
+                position: absolute;
+                right: 20px;
+                font-size: 25px;
+                font-weight: bold;
+                background-color: #00000000;
+                border: 0;
+                display: flex;
+                align-items: center;
+            }
+        }
     }
     .chat {
         width: 70%;
@@ -55,6 +85,7 @@
                 height: 100%;
             }
             .wr_user_name {
+                margin-left: 20px;
                 .user_name {
                     font-size: 25px;
                 }
@@ -74,7 +105,7 @@
                 height: fit-content;
                 display: flex;
                 justify-content: end;
-                margin-top: 20px;
+                margin-top: 10px;
                 .content_my_mess {
                     max-width: 70%;
                     min-height: 40px;
@@ -96,7 +127,7 @@
             height: fit-content;
             display: flex;
             justify-content: start;
-            margin-top: 30px;
+            margin-top: 10px;
             .avatar_user_mess{
 
             }
@@ -170,5 +201,31 @@
                 }
             }
         }
+
+        //Render khi chưa chọn user để .chat
+        .not_user{
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            .wr_icon_mess{
+                width: 100%;
+                text-align: center;
+            }
+            .content_not_user{
+                width: 100%;
+                text-align: center;
+            }
+        }
     }
+}
+
+//Sửa thời gian chat
+.time_send{
+    margin-top: 20px;
+    width: 100%;
+    text-align: center;
+    color: #9c9393;
+    font-size: 10px;
 }

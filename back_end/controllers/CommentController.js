@@ -11,7 +11,10 @@ class CommentController {
   }
   getCommentById(req, res) {
     const { id } = req.params;
-    dbModel.Comment.findByPk(id)
+    dbModel.Comment.findByPk(id, {
+      order: [['id', 'DESC']]
+
+    })
       .then((comments) => res.json(comments))
       .catch((err) => res.status(500).json(err));
   }
@@ -38,14 +41,19 @@ class CommentController {
   
       const postOwnerId = post.user_id; // Chủ bài viết
   
-      // Tạo thông báo cho người sở hữu bài viết
-      const notification = await dbModel.Notification.create({
-        user_id: postOwnerId, // Gửi thông báo cho người sở hữu bài viết
-        message: `Bạn có một bình luận mới: ${comment_content}`,
-        post_id: 10, // Liên kết đến bài viết
-      });
+      //Kiểm tra nếu người dùng bình luận chính bài viết của mình sẽ không hiển thị thông báo và ngược lại
+      if (postOwnerId !== user_id) {
 
-      res.status(200).json({ message: 'Comment added and notification sent', comment_content, notification });
+        // Tạo thông báo cho người sở hữu bài viết
+        const notification = await dbModel.Notification.create({
+          user_id: postOwnerId, // Gửi thông báo cho người sở hữu bài viết
+          message: `Đã bình luận về bài viết của bạn: ${comment_content}`,
+          post_id: 10, // Liên kết đến bài viết
+          user_id_send: user_id
+        });
+        res.status(200).json({ message: 'Comment added and notification sent', comment_content, notification });
+      }
+
 
     } catch (error) {
       console.error('Error adding comment:', error);

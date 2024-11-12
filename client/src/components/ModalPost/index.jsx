@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 
 const cx = classNames.bind(style);
 
-function ModalPost({ isActiveAdd, isActiveEdit ,nameModal ='Name Modal' ,closeModal, imgs , txt, idPost, idUser }) {
+function ModalPost({ isActiveAdd, isActiveEdit ,nameModal ='Name Modal' ,closeModal, imgs , txt, idPost, idUser,user }) {
     // Khai báo State và Ref (khai báo biến ở đây)
     const refForm = useRef();
     const [txtDesPost, setTxtDesPost] = useState('');
@@ -116,10 +116,10 @@ function ModalPost({ isActiveAdd, isActiveEdit ,nameModal ='Name Modal' ,closeMo
                     </div>
                     <div className={cx('wr_startus')}>
                         <div className={cx('img_startus')}>
-                            <img alt="" src="" />
+                            <img alt="" src={user.avatar} />
                         </div>
                         <div className={cx('des_startus')}>
-                            <div className={cx('my_user_id')}>user_id - {maxCharacter - txtDesPost.length}</div>
+                            <div className={cx('my_user_id')}>{user.username}</div>
                             <form ref={refForm} onSubmit={handleSubmit} encType="multipart/form-data">
                                 <textarea
                                     className={cx('txt_des')}
@@ -127,7 +127,7 @@ function ModalPost({ isActiveAdd, isActiveEdit ,nameModal ='Name Modal' ,closeMo
                                     onChange={(e) => setTxtDesPost(e.target.value)}
                                     rows={4} // Đặt số dòng hiển thị ban đầu
                                     cols={50} // Đặt độ rộng của textarea
-                                    placeholder="Có gì hot...?"
+                                    placeholder="Nhập cảm nghĩ.."
                                     maxLength={500}
                                 />
 

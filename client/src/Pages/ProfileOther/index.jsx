@@ -20,66 +20,6 @@ import { useParams } from 'react-router-dom';
 
 const cx = classNames.bind(style);
 
-// const user_data = {
-//     id: 1,
-//     user_name: 'thekh4nq',
-//     name: 'Nguyễn Thế Khang',
-//     bio: 'Thích màu hồng, không giả dối.',
-//     img: 'https://th.bing.com/th/id/OIP._9ASq3twoUAAMV6Xb-uvlwHaFm?rs=1&pid=ImgDetMain',
-// };
-// const arr_post = [
-//     {
-//         post_id: 1,
-//         description: 'Hôm nay buồn quá các bạn',
-//         img: 'https://th.bing.com/th/id/OIP._9ASq3twoUAAMV6Xb-uvlwHaFm?rs=1&pid=ImgDetMain',
-//     },
-//     {
-//         post_id: 2,
-//         description: 'Khá đẹp trai',
-//         img: 'https://th.bing.com/th/id/OIP.hvq1mk4KaOTVcy_L-CY5xgHaFb?w=231&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7',
-//     },
-//     {
-//         post_id: 3,
-//         description: 'Em khang mafia',
-//         img: 'https://th.bing.com/th/id/OIP.XiwYd2wYl5HB7NVFZXe8gAHaHa?w=163&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7',
-//     },
-//     {
-//         post_id: 4,
-//         description: 'Có những thứ đâu phải nói z là z',
-//         img: 'https://th.bing.com/th/id/OIP._9ASq3twoUAAMV6Xb-uvlwHaFm?rs=1&pid=ImgDetMain',
-//     },
-//     {
-//         post_id: 5,
-//         description: 'aaaaaaaaaaaaaaaaaaaaaaa',
-//         img: 'https://th.bing.com/th/id/OIP._9ASq3twoUAAMV6Xb-uvlwHaFm?rs=1&pid=ImgDetMain',
-//     },
-//     {
-//         post_id: 6,
-//         description: 'Hello cả nhà yêu của Kem',
-//         img: 'https://th.bing.com/th/id/OIP.SsnrO7pzZHaycvEAI7gQ2AHaEn?w=280&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7',
-//     },
-//     {
-//         post_id: 7,
-//         description: 'Olele Olala',
-//         img: 'https://th.bing.com/th/id/OIP.6nDu0p6RwW2arJTCOU2pCQHaDt?w=327&h=174&c=7&r=0&o=5&dpr=1.3&pid=1.7',
-//     },
-//     {
-//         post_id: 8,
-//         description: 'Trời hôm nay nhiều mây cực',
-//         img: 'https://th.bing.com/th/id/OIP._9ASq3twoUAAMV6Xb-uvlwHaFm?rs=1&pid=ImgDetMain',
-//     },
-//     {
-//         post_id: 9,
-//         description: 'Mẹ ơi, thằng con trai của mẹ là một thằng phản bội',
-//         img: 'https://th.bing.com/th/id/OIP._9ASq3twoUAAMV6Xb-uvlwHaFm?rs=1&pid=ImgDetMain',
-//     },
-//     {
-//         post_id: 10,
-//         description: 'Hôm nay vui quá các bạn',
-//         img: 'https://th.bing.com/th/id/OIP._9ASq3twoUAAMV6Xb-uvlwHaFm?rs=1&pid=ImgDetMain',
-//     },
-// ];
-
 function ProfileOther() {
     const [user, setUser] = useState([]);
     const [posts, setPosts] = useState([]);
@@ -205,7 +145,7 @@ function ProfileOther() {
                                 <p className={cx('sum_fr')}>Có 10 bạn bè</p>
                             </div>
                             <div className={cx('wr_img_info')}>
-                                <img src={user.img} alt="avata user" />
+                                <img src={item.avatar} alt="avata user" />
                             </div>
                         </div>
                         <div className={cx('wr_add_chat')}>
@@ -227,6 +167,7 @@ function ProfileOther() {
                         <div onClick={handleUpLoad} className={cx('des_startus')}>
                             <div className={cx('des')}>Có gì hot?</div>
                         </div>
+                        
                         <div className={cx('btn_upl_stt')}>
                             <button onClick={handleUpLoad} className={cx('btn_upload')}>
                                 Đăng

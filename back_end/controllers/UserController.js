@@ -13,6 +13,7 @@ class UserController {
 
   // [GET] Lấy người dùng cụ thể theo id
   // Giả sử bạn đang sử dụng Sequelize ORM để tương tác với database
+//-------------------------------------------------------------------------------------------------------
 
 show(req, res) {
   const { username } = req.params; // Lấy username từ params URL
@@ -35,6 +36,29 @@ show(req, res) {
       res.status(500).json({ error: "An error occurred while fetching the user", details: err });
     });
 }
+//-------------------------------------------------------------------------------------------------------
+
+
+getUserById(req, res) {
+  const { id } = req.params; // Lấy username từ params URL
+
+  // Tìm người dùng theo username
+  dbModel.User.findByPk(id)
+    .then((user) => {
+      if (user) {
+        // Nếu tìm thấy người dùng, trả về dữ liệu
+        res.json(user);
+      } else {
+        // Nếu không tìm thấy người dùng, trả về lỗi 404
+        res.status(404).json({ error: "User not found" });
+      }
+    })
+    .catch((err) => {
+      // Xử lý lỗi nếu có trong quá trình tìm kiếm
+      res.status(500).json({ error: "An error occurred while fetching the user", details: err });
+    });
+}
+//-------------------------------------------------------------------------------------------------------
 
   // [POST] xử lý thêm người dùng
   async register(req, res) {
@@ -52,12 +76,12 @@ show(req, res) {
   
       // Lưu người dùng mới vào cơ sở dữ liệu
       const newUser = await dbModel.User.create({
-        username,
+        username: username,
         password: hashedPassword, // Lưu mật khẩu đã mã hóa
-        name,
-        bio,
-        avatar,
-        email,
+        name: name,
+        bio: bio,
+        avatar: avatar,
+        email: email,
 
       });
   
@@ -89,7 +113,27 @@ show(req, res) {
   // }
   
   // [PUT] sửa đổi thông tin người dùng
-  update(req, res) {}
+  update(req, res) {
+    const { id } = req.params
+    const {username, name, bio} = req.body
+
+    dbModel.User.update({
+      username: username,
+      name: name,
+      bio: bio,
+    }, {where: {id}})
+    .then((result) => {
+        if (result[0] === 0) {
+          return res.status(404).json({ error: "Comment not found" });
+        }
+        res.status(200).json({ message: "Comment updated successfully" });
+      })
+      .catch((err) =>
+        res
+          .status(500)
+          .json({ error: "Failed to update comment", details: err })
+      );
+  }
 
   // [DELETE] xóa người dùng
   destroy() {}
