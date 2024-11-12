@@ -20,7 +20,6 @@ import { useParams } from 'react-router-dom';
 import FriendButton from '~/components/FriendButton';
 const cx = classNames.bind(style);
 
-
 function ProfileOther() {
     const [user, setUser] = useState([]);
     const [posts, setPosts] = useState([]);
@@ -110,7 +109,7 @@ function ProfileOther() {
                                 <p className={cx('sum_fr')}>Có 10 bạn bè</p>
                             </div>
                             <div className={cx('wr_img_info')}>
-                                <img src={user.img} alt="avata user" />
+                                <img src={item.avatar} alt="avata user" />
                             </div>
                         </div>
                         <div className={cx('wr_add_chat')}>

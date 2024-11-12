@@ -43,15 +43,26 @@
     }
     .wr_image_post {
         height: fit-content;
-        padding: 0 120px;
+        padding: 0 80px;
         width: 100%;
-        display: flex;
-        .image_post {
-            width: 300px;
-            height: auto;
+        .list_image_post{
+            height: 100%;
+            display: flex;
+            overflow-x: auto;
             border-radius: 15px;
+
+            .image_post {
+                width: 300px;
+                height: auto;
+                border-radius: 15px;
+                margin-right: 10px;
+            }
+        }
+        .list_image_post::-webkit-scrollbar{
+            display: none;
         }
     }
+   
     .interact {
         display: flex;
         width: 100%;

@@ -10,32 +10,38 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Notification.belongsTo(models.User, {
-        foreignKey: 'user_id',
-        as: 'oneUser'
-      })
+        foreignKey: "user_id",
+        as: "oneUser",
+      });
       Notification.belongsTo(models.Post, {
-        foreignKey: 'post_id',
-      })
-
+        foreignKey: "post_id",
+      });
     }
   }
   Notification.init(
     {
       message: DataTypes.TEXT,
-      user_id:{
-          type: DataTypes.INTEGER,
-          references: {
-            model: 'users',
-            key: 'id'
-          }
-      } ,
-      post_id:{
+      user_id: {
         type: DataTypes.INTEGER,
         references: {
-          model: 'posts',
-          key: 'id'
-        }
-    } 
+          model: "users",
+          key: "id",
+        },
+      },
+      post_id: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: "posts",
+          key: "id",
+        },
+      },
+      user_id_send: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: "users",
+          key: "id",
+        },
+      },
     },
     {
       sequelize,

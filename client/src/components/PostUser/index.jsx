@@ -4,7 +4,7 @@ import style from './PostUser.module.scss';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Button, Menu, MenuItem ,Fade} from '@mui/material';
+import { Button, Menu, MenuItem, Fade } from '@mui/material';
 import ModalPost from '../ModalPost';
 import { toast } from 'react-toastify';
 import TimeUp from '../TimeUp';
@@ -19,59 +19,52 @@ item: truyền 1 đối tượng post vào component
 index: ?
 */
 
-const PostUser = ({ isActiveEdit,setPosts, user, item, index }) => {
+const PostUser = ({ isActiveEdit, setPosts, user, item, index }) => {
     //Tạo usestate lấy dữ liệu bài viết
-    console.log('hah');
-    console.log(item);
-    
+
     // Xử lí nút like bài viết
     const [liked, setLiked] = useState(false);
     const [showHeart, setShowHeart] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [openMenus, setOpenMenus] = useState({});
     const [selectedModal, setSelectedModal] = useState({});
-    
-    
-    const handleClick = (id,event) => {
+
+    const handleClick = (id, event) => {
         setOpenMenus((pre) => ({
             ...pre,
-            [id] : event.currentTarget,
-        }))
+            [id]: event.currentTarget,
+        }));
     };
     const handleClose = (id) => {
         setOpenMenus((pre) => ({
             ...pre,
-            [id] : null
-        }))
+            [id]: null,
+        }));
     };
-    console.log('sd');
-    
+
     // handle Edit Post of user
-    const handleEditPost = (id,imgs, content) => {
+    const handleEditPost = (id, imgs, content) => {
         setShowModal(true);
-        setSelectedModal({id, imgs, content});
+        setSelectedModal({ id, imgs, content });
         setOpenMenus((pre) => ({
             ...pre,
-            [id] : null
-        }))
-    }
-    
+            [id]: null,
+        }));
+    };
+
     // handle Delete Post of user
     const handleDeletePost = (id) => {
-        axios.delete(`http://localhost:8080/posts/delete/${id}`)
-         .then(response => {
-             toast(response.data.message, { position: 'bottom-center' });
-         })
-         .catch(error => {
-             if (error.response) {
-                 toast.error(error.response.data.message, { position: 'bottom-center' });
-             }
-         })
-        
-     }
-
-    
-
+        axios
+            .delete(`http://localhost:8080/posts/delete/${id}`)
+            .then((response) => {
+                toast(response.data.message, { position: 'bottom-center' });
+            })
+            .catch((error) => {
+                if (error.response) {
+                    toast.error(error.response.data.message, { position: 'bottom-center' });
+                }
+            });
+    };
 
     const handleLike = async (postId) => {
         try {
@@ -122,16 +115,16 @@ const PostUser = ({ isActiveEdit,setPosts, user, item, index }) => {
 
             setPosts((prevPosts) => {
                 return prevPosts.map((post) => {
-                  if (post.id === postId) {
-                    // Xoá like của người dùng hiện tại
-                    return {
-                      ...post,
-                      manyLike: post.manyLike.filter(like => like.user_id !== user.id), // Loại bỏ like của user
-                    };
-                  }
-                  return post; // Không thay đổi bài viết khác
+                    if (post.id === postId) {
+                        // Xoá like của người dùng hiện tại
+                        return {
+                            ...post,
+                            manyLike: post.manyLike.filter((like) => like.user_id !== user.id), // Loại bỏ like của user
+                        };
+                    }
+                    return post; // Không thay đổi bài viết khác
                 });
-              });
+            });
 
             setLiked(false);
             // setShowHeart(true);
@@ -158,7 +151,6 @@ const PostUser = ({ isActiveEdit,setPosts, user, item, index }) => {
             try {
                 const response = await axios.get(`http://localhost:8080/likes/${user.id}/${item.id}`);
                 setLiked(response.data.liked);
-                console.log(response.data.liked);
             } catch (error) {
                 console.error('Error checking like status', error);
             }
@@ -166,6 +158,7 @@ const PostUser = ({ isActiveEdit,setPosts, user, item, index }) => {
         checkLikeStatus();
     }, [user, item]);
 
+    console.log(item);
 
     return (
         <>
@@ -187,17 +180,17 @@ const PostUser = ({ isActiveEdit,setPosts, user, item, index }) => {
                             </div>
                         </div>
 
-                        {isActiveEdit && (<div className={cx('menu')}>
-                            
+                        {isActiveEdit && (
+                            <div className={cx('menu')}>
                                 <Button
                                     id="fade-button"
                                     aria-controls={openMenus[item.id] ? 'fade-menu' : undefined}
                                     aria-haspopup="true"
                                     aria-expanded={openMenus[item.id] ? 'true' : undefined}
-                                    onClick={(e) => handleClick(item.id,e)}
+                                    onClick={(e) => handleClick(item.id, e)}
                                     className={cx('btn_menu')}
                                 >
-                                    <span style={{fontSize: '20px'}}>...</span>
+                                    <span style={{ fontSize: '20px' }}>...</span>
                                 </Button>
                                 <Menu
                                     className={cx('wr_menu')}
@@ -207,39 +200,49 @@ const PostUser = ({ isActiveEdit,setPosts, user, item, index }) => {
                                     }}
                                     anchorEl={openMenus[item.id]}
                                     open={Boolean(openMenus[item.id])}
-                                    onClose={() =>handleClose(item.id)}
+                                    onClose={() => handleClose(item.id)}
                                     TransitionComponent={Fade}
                                 >
-                                    <MenuItem className={cx('menu_item')} onClick={() => handleEditPost(item.id ,item.manyImage, item.content)}>
+                                    <MenuItem
+                                        className={cx('menu_item')}
+                                        onClick={() => handleEditPost(item.id, item.manyImage, item.content)}
+                                    >
                                         Chỉnh sửa
                                     </MenuItem>
                                     <MenuItem onClick={() => handleDeletePost(item.id)}>Xoá bài viết</MenuItem>
                                 </Menu>
-
-                                
-                            </div>)}
-                            {showModal && (<ModalPost 
-                                            isActiveEdit
-                                            nameModal='Sửa'
-                                            closeModal={() => setShowModal(false)} 
-                                            idPost={selectedModal.id}
-                                            imgs={selectedModal.imgs}  
-                                            txt={selectedModal.content}
-                                            />
-                            )}
+                            </div>
+                        )}
+                        {showModal && (
+                            <ModalPost
+                                isActiveEdit
+                                nameModal="Sửa"
+                                closeModal={() => setShowModal(false)}
+                                idPost={selectedModal.id}
+                                imgs={selectedModal.imgs}
+                                txt={selectedModal.content}
+                            />
+                        )}
                     </div>
                     <div className={cx('wr_image_post')}>
-                        {item.manyImage.map((image, index) => (
-                            <img key={index} alt="" className={cx('image_post')} src={`http://localhost:8080/uploads/${image.img_url}`} />
-                        ))}
+                        <div className={cx('list_image_post')}>
+                            {item.manyImage.map((image, index) => (
+                                <img
+                                    key={index}
+                                    alt=""
+                                    className={cx('image_post')}
+                                    src={`http://localhost:8080/uploads/${image.img_url}`}
+                                />
+                            ))}
+                        </div>
                     </div>
 
                     <div className={cx('interact')}>
                         <button className={cx('like')} onClick={() => toggleLike(item.id)}>
-                            {liked ? <BiSolidHeart style={{ color: 'red' }} /> : <BiHeart />}{' '}
+                            {liked ? <BiSolidHeart style={{ color: '#d63232' }} /> : <BiHeart />}{' '}
                         </button>{' '}
                         <label>{item.manyLike.length}</label>
-                        <Link to={`DetailPost/${item.id}`}>
+                        <Link to={`/DetailPost/${item.id}`}>
                             <button className={cx('comment')}>
                                 <BiMessageRounded />{' '}
                             </button>{' '}

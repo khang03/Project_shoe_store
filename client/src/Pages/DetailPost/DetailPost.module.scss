@@ -30,30 +30,37 @@
                     margin-left: 20px;
                     color: #636266;
                 }
+                p{
+                    font-weight: bold;
+                }
             }
         }
 
         .content_post {
+            margin-top: 20px;
             padding: 0 55px;
             width: 100%;
             .content {
                 position: relative;
                 display: inline-block;
                 width: 100%;
-                p {
-                    margin-bottom: 20px;
-                }
                 .file_post {
                     width: 100%;
                     height: fit-content;
+                    display: flex;
+                    overflow-x: auto;
+                    border-radius: 15px;
                     img {
                         width: 80%;
                         height: auto;
                         border-radius: 15px;
+                        margin-right: 10px;
                     }
                     img:hover {
                         cursor: pointer;
                     }
+                }.file_post::-webkit-scrollbar{
+                    display: none;
                 }
                 .show_heart {
                     font-size: 50px;

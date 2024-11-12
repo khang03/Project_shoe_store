@@ -86,7 +86,7 @@ const navigate = useNavigate()
                             Đăng ký
                         </Link>
                     </form>
-                
+                    {message}
                 </Paper>
             </Container>
         </div>

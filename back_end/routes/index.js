@@ -7,6 +7,7 @@ const authRouter = require("./authRouter.js");
 const friendRouter = require("./friendRouter.js");
 const dbModel = require("../models");
 const notificationRouter = require("./notificationRoute.js");
+const messageRouter = require("./messageRoute.js");
 const MiddlewareUserLogin = require('../middleware/middlewareUserLogin.js')
 
 const { authenticateToken } = require("../controllers/UserController.js");
@@ -21,6 +22,7 @@ function Routes(app) {
   app.use("/likes", likeRouter);
   app.use("/login", authRouter)
   app.use("/friend", friendRouter)
+  app.use("/chat", messageRouter)
   app.use("/notification", notificationRouter)
   app.post('/login', (res, req) => {
     if(req.session.userId){
