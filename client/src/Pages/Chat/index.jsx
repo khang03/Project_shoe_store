@@ -60,10 +60,10 @@ function Chat() {
             }
         };
         fetchMessage();
-    }, [allMess.length]);
+    }, [allMess]);
 
     //hàm gửi tin nhắn
-    const sendMessage = async (user) => {
+    const sendMessage = async () => {
         try {
             const response = await axios.post('http://localhost:8080/chat', {
                 sender_id: userId.id,
@@ -71,7 +71,6 @@ function Chat() {
                 message_content: content,
                 message_img: '1.png',
             });
-            alert('Tin nhắn đã được gửi!');
             setAllMess((preMess) => [...preMess, response.data]);
             setContent('');
             console.log(response.data);
@@ -83,6 +82,7 @@ function Chat() {
         }
     };
 
+    
     // const sortUser = [...user].sort((a, b) => {
     //     if (lastMessagedUser) {
     //         if (a.id === lastMessagedUser.id) return -1;

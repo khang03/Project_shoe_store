@@ -30,13 +30,13 @@ function Register() {
     //     console.log('Password:', password);
     // };
 
-    // Hàm để xử lý form submit
-    const handlePreviewAvatar = (e) => {
-        const file = e.target.files[0];
-        file.preview = URL.createObjectURL(file);
-        setAvatar(file);
-        console.log(file.preview);
-    };
+    // // Hàm để xử lý form submit
+    // const handlePreviewAvatar = (e) => {
+    //     const file = e.target.files[0];
+    //     file.preview = URL.createObjectURL(file);
+    //     setAvatar(file);
+    //     console.log(file.preview);
+    // };
     const handleSubmitUser = async (e) => {
         e.preventDefault(); // Ngừng reload trang khi submit form
 
@@ -50,7 +50,7 @@ function Register() {
                 email: email,
                 bio: bio,
                 name: name,
-                avatar: avatar.preview,
+                avatar: avatar,
             });
             setMessage(response.data.message); // Lấy thông báo từ server
 

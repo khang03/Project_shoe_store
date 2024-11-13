@@ -9,6 +9,7 @@ import ProfileOther from '~/Pages/ProfileOther';
 import HeaderOnlyLayout from '~/components/Layout/HeaderOnlyLayout';
 import Register from '~/Pages/Register';
 import Login from '~/Pages/Login';
+import Changpass from '~/Pages/ChangePass';
 
 const publicRoutes = [
     { path: '/', component: Home },
@@ -18,6 +19,7 @@ const publicRoutes = [
     { path: '/Find', component: Find },
     { path: '/Chat', component: Chat, layout: HeaderOnlyLayout },
     { path: '/DetailPost/:id', component: DetailPost },
+    { path: '/ChangPass/:id', component: Changpass },
     { path: '/Register/', component: Register, layout: null },
     { path: '/Login', component: Login, layout: null },
 ];

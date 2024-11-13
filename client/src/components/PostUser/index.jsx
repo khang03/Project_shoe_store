@@ -221,6 +221,7 @@ const PostUser = ({ isActiveEdit, setPosts, user, item, index }) => {
                                 idPost={selectedModal.id}
                                 imgs={selectedModal.imgs}
                                 txt={selectedModal.content}
+                                user={user}
                             />
                         )}
                     </div>

@@ -330,7 +330,7 @@ function DetailPost() {
                                 </div>
                                 <div className={cx('user_id_day')}>
                                     {post.oneUser.username !== userId.username ? (
-                                        <Link to={`/profileOther/${post.oneUser.username}`}>
+                                        <Link to={`/profileOther/${post.oneUser.id}`}>
                                             <p>{post.oneUser.username}</p>
                                         </Link>
                                     ) : (
