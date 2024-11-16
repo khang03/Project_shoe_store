@@ -1,11 +1,44 @@
 // import Models
+const { Sequelize } = require("sequelize");
 const dbModel = require("../models");
-
 class FriendController {
 
-    // [GET] Lấy danh sách bạn bè của người dùng
-    getListFriend() {
+    // [GET] Lấy danh sách bạn bè của người dùng có :id
+    async getListFriend(req,res) {
+        const {userId} = req.params;
+        
+        try {
+            const friends = await dbModel.Friendship.findAll({
+                where: {
+                    status: 1, // Chỉ lấy các mối quan hệ bạn bè
+                    [Sequelize.Op.or]: [
+                        { userid_1: userId },
+                        { userid_2: userId },
+                    ],  
+                },
+                attributes: [
+                    [Sequelize.literal(`CASE WHEN userid_1 = ${userId} THEN userid_2 ELSE userid_1 END`), 'friend_id'],
+                ],
+                raw: true
+            });
+            const friendIds = friends.map(friend => friend.friend_id);
 
+            // Truy vấn bảng user để lấy thông tin bạn bè
+            const users = await dbModel.User.findAll({
+                where: {
+                    id: {
+                        [Sequelize.Op.in]: friendIds, // Lọc theo mảng friendIds
+                    }
+                },
+                attributes: [ 'id','name', 'avatar'], // Lấy thông tin cần thiết
+                raw: true
+            });
+            res.json(users);
+
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Lỗi hệ thống...' });
+        }
     }
 
     // [GET]

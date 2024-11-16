@@ -16,10 +16,12 @@ class MessageController {
 
   // [POST] gửi tin nhắn
   async sendMessage(req, res) {
+    
+    const { message_content, message_img , sender_id, receiver_id} = req.body;
     try {
-      const { message_content, message_img , sender_id, receiver_id} = req.body;
+      
       // Kiểm tra nếu có thông tin không hợp lệ
-      if (!sender_id || !receiver_id || !message_content) {
+      if (!message_content && !message_img) {
         return res.status(400).json({ error: "Thiếu thông tin cần thiết." });
       }
 

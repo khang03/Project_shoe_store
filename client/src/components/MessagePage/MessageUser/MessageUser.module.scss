@@ -1,0 +1,21 @@
+.user_chat {
+    display: flex;
+    padding: 10px 0 10px 20px;
+    &:hover {
+        background-color: #efefef;
+        cursor: pointer;
+    }
+    .div_avatar {
+    }
+
+    .name_user {
+        padding: 0px 20px;
+        line-height: 30px;
+        .span_name_user {
+            font-weight: bold;
+        }
+        .span_time_send_mess {
+            color: #9c9393;
+        }
+    }
+}
