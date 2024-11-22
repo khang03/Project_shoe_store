@@ -183,6 +183,11 @@
                         height: 20px;
                     }
                 }
+
+                .check-in-container {
+                    text-align: center;
+                    margin-bottom: 20px;
+                }
             }
         }
 
@@ -219,4 +224,14 @@
   color: #666; /* Màu chữ khi nút bị vô hiệu hóa */
   cursor: not-allowed; /* Con trỏ chuột cấm */
   opacity: 0.6; /* Mờ nút */
+}
+
+.iconLocation {
+        width: 5%;
+        height: 100%;
+        background-color: #00000000;
+        border: 0;
+        color: #046d58;
+        font-weight: bold;
+    
 }

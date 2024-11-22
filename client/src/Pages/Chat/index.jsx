@@ -2,6 +2,7 @@ import classNames from 'classnames/bind';
 import style from './Chat.module.scss';
 import { Avatar } from '@mui/material';
 import { BiImageAdd } from 'react-icons/bi';
+import { FaMapMarkerAlt } from "react-icons/fa";
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Authentication from '~/functions/Authentication.jsx';
@@ -10,11 +11,7 @@ import MessageUser from '~/components/MessagePage/MessageUser';
 import io from 'socket.io-client';
 import TimeUp from '~/components/TimeUp';
 
-const socket = io('http://localhost:8080',{
-    query: {
-        userId: 1,
-    },
-});
+const socket = io('http://localhost:8080');
 
 const cx = classNames.bind(style);
 function Chat() {
@@ -44,7 +41,7 @@ function Chat() {
          getUserLogin();
     },[])
     
-
+    // Nhận dữ liệu tin nhắn thông qua socket
     useEffect(() => {
         socket.on('receiveMessage', (message) => {
             setMessages((prev) => [...prev, message]);
@@ -100,7 +97,56 @@ function Chat() {
         setInputMess('');
     }   
  
-  
+    // hàm xử lí gửi vị trí  
+    // const [messages, setMessages] = useState([]);
+    const [location, setLocation] = useState('')
+    console.log(location);
+    
+    const handleLocation = async () => {
+
+        try {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const { latitude, longitude } = position.coords;
+                        setLocation(`https://www.google.com/maps?q=${latitude},${longitude}`)
+                    },
+                    (error) => {
+                        alert("Không thể lấy vị trí: " + error.message);
+                    }
+                );
+            } else {
+                alert("Trình duyệt của bạn không hỗ trợ Geolocation!");
+            }
+            // hàm gửi tin nhắn 
+            const padload = {
+                senderId: userLogin.id,
+                receiverId: choosenFriend.id, // lấy id người dùng khi click vào 
+                messageContent: location,
+                room: room,
+                
+            }
+            // phát sự kiện
+            socket.emit('sendMessage',padload)
+            // setMessages((preMess) => [...preMess, response.data])
+        } catch (error) {
+            console.error('Lỗi khi gửi tin nhắn:', error);
+            
+
+            alert('Có lỗi xảy ra khi gửi tin nhắn.');
+        }
+
+    };
+
+     // hàm xách nhận link goggle mad 
+     const isValidUrl = (string) => {
+        try {
+          new URL(string); // Sử dụng constructor URL để xác thực
+          return true;
+        } catch (error) {
+          return false;
+        }
+    };
 
     return (
         <div className={cx('wrapper')}>
@@ -139,7 +185,12 @@ function Chat() {
                             <div className={cx('my_mess')} key={item.id}>
                                 
                                 <div className={cx('content_my_mess')} >
-                                    {item.message_content}
+                                {isValidUrl(item.message_content) ? 
+                                    (
+                                        <a href={item.message_content} target="_blank" rel="noopener noreferrer">{item.message_content}</a>
+                                    ):(
+                                        item.message_content
+                                    )}
                                 </div>
                             </div>
                         ) : (
@@ -170,9 +221,13 @@ function Chat() {
                                     <BiImageAdd className={cx('img_icon')} />
                                 </label>
                             </div>
+                            
                             <button className={cx('btnSendMess')}  disabled={!inputMess.trim()}>Gửi</button>
                             
                         </form>
+                        <button className={cx('iconLocation')} onClick={handleLocation}>
+                                <FaMapMarkerAlt />
+                        </button>
                         
                     
                 </div>
