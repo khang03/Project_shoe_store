@@ -13,9 +13,15 @@ module.exports = {
         type: Sequelize.TEXT
       },
       user_id: {
+        allowNull:false,
         type: Sequelize.INTEGER
       },
       post_id: {
+        allowNull: false,
+
+        type: Sequelize.INTEGER
+      },
+      role: {
         allowNull: false,
 
         type: Sequelize.INTEGER
