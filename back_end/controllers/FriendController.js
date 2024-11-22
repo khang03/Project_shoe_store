@@ -18,11 +18,14 @@ class FriendController {
                 },
                 attributes: [
                     [Sequelize.literal(`CASE WHEN userid_1 = ${userId} THEN userid_2 ELSE userid_1 END`), 'friend_id'],
+                    'room'
+                   
                 ],
+                
                 raw: true
             });
             const friendIds = friends.map(friend => friend.friend_id);
-
+            console.log(friends);
             // Truy vấn bảng user để lấy thông tin bạn bè
             const users = await dbModel.User.findAll({
                 where: {
@@ -33,7 +36,17 @@ class FriendController {
                 attributes: [ 'id','name', 'avatar'], // Lấy thông tin cần thiết
                 raw: true
             });
-            res.json(users);
+            
+            // Gộp dữ liệu1
+            const mergedArray = friends.map(itemA => {
+                const friendData = users.find(itemB => itemB.id === itemA.friend_id); // Tìm bạn bè trong arrB
+                return {
+                ...friendData, // Thêm thông tin từ arrB
+                room: itemA.room // Thêm thuộc tính room từ arrA
+                };
+            });
+            console.log(mergedArray);
+            res.json(mergedArray);
 
         } catch (error) {
             console.error(error);

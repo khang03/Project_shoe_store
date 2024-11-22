@@ -6,8 +6,6 @@ const cx = classNames.bind(style);
 
 const MessageUser = ({friend}) => {
 
-    const [friendId, setFriendId] = useState(friend.id);
-
     
     
     return (

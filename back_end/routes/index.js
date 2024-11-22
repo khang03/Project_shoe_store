@@ -22,7 +22,7 @@ function Routes(app) {
   app.use("/likes", likeRouter);
   app.use("/login", authRouter)
   app.use("/friend", friendRouter)
-  app.use("/chat", messageRouter)
+  app.use("/messages", messageRouter)
   app.use("/notification", notificationRouter)
   app.post('/login', (res, req) => {
     if(req.session.userId){

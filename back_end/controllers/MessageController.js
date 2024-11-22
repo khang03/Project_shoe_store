@@ -2,45 +2,35 @@
 const dbModel = require("../models");
 
 class MessageController {
-  // [GET] lấy tất cả các tin nhắn của người dùng
-  getMessage(req, res) {
-        dbModel.Message.findAll()
-        .then((posts) => {
-            res.json(posts);
-          })
-          .catch((error) => {
-            res.status(500).json(error);
-          });
+  // [GET] lấy tin nhắn của Room (...)
+  getMessageByRoom(req, res) {
        
+      const {room} = req.query; // dữ liệu gửi theo (payload)
+      dbModel.Message.findAll({where: {room}})
+      .then(dbModel => {  return res.status(201).json( dbModel) })
+      .catch(error => res.status(500).json({message: error.message}));
   }
 
-  // [POST] gửi tin nhắn
-  async sendMessage(req, res) {
-    
-    const { message_content, message_img , sender_id, receiver_id} = req.body;
+  // [POST] xử lý gửi lưu tin nhắn
+  async saveMessage(data) {
+
     try {
-      
-      // Kiểm tra nếu có thông tin không hợp lệ
-      if (!message_content && !message_img) {
-        return res.status(400).json({ error: "Thiếu thông tin cần thiết." });
-      }
-
-      // Lưu tin nhắn vào cơ sở dữ liệu
-      const newMessage = await dbModel.Message.create({
-        sender_id: sender_id,
-        receiver_id: receiver_id,
-        message_content: message_content,
-        message_img: message_img,
+      const dataMessage = await dbModel.Message.create({
+        sender_id: data.senderId,
+        receiver_id: data.receiverId,
+        room: data.room,
+        message_content: data.messageContent,
+        message_img: 'none.png',
       });
-
-      res.status(201).json({ message: "Tin nhắn đã được gửi!", newMessage });
+      return dataMessage; // Trả về tin nhắn đã lưu
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Có lỗi xảy ra khi gửi tin nhắn." });
+      console.error('Error saving message:', error);
+      throw error;
     }
+    
   }
 
-  // [DELETE] xóa tin nhắn
+  // [DELETE] thu hồi tin nhắn
   deleteMessage() {}
 }
 module.exports = new MessageController();
